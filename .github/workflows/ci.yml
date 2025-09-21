@@ -1,0 +1,124 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:   # allows manual trigger of any job
+
+jobs:
+  # -------------------------
+  # Build + Test (always runs)
+  # -------------------------
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal -c Release
+
+  # -------------------------
+  # AOT Publish per OS (manual only)
+  # -------------------------
+  aot-publish-windows:
+    runs-on: windows-latest
+    needs: build-test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish AOT (Windows)
+        run: dotnet publish -c Release -r win-x64 -p:PublishAot=true -o ./artifacts/win-x64
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: rox-aot-win-x64
+          path: ./artifacts/win-x64
+
+  aot-publish-linux:
+    runs-on: ubuntu-latest
+    needs: build-test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish AOT (Linux)
+        run: dotnet publish -c Release -r linux-x64 -p:PublishAot=true -o ./artifacts/linux-x64
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: rox-aot-linux-x64
+          path: ./artifacts/linux-x64
+
+  aot-publish-macos:
+    runs-on: macos-latest
+    needs: build-test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish AOT (macOS)
+        run: dotnet publish -c Release -r osx-arm64 -p:PublishAot=true -o ./artifacts/osx-arm64
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: rox-aot-osx-arm64
+          path: ./artifacts/osx-arm64
+
+  # -------------------------
+  # NuGet publish (manual only)
+  # -------------------------
+  nuget-publish:
+    runs-on: ubuntu-latest
+    needs: build-test
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Pack NuGet
+        run: dotnet pack -c Release
+
+      - name: Push to NuGet
+        run: dotnet nuget push ./nupkg/*.nupkg \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json

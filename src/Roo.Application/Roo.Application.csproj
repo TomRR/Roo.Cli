@@ -3,6 +3,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>Latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         
@@ -11,7 +12,6 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>roo</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
-        <Version>1.0.0</Version>
     </PropertyGroup>
 
     <!-- AOT settings only apply when explicitly requested -->
