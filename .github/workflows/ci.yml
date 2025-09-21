@@ -2,11 +2,11 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
-    tags: [ 'v*' ]
+    branches: [ main ]       # runs build/test + AOT builds
+    tags: [ 'v*' ]           # triggers AOT + NuGet pack & push
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:   # allows manual trigger of any job
+    branches: [ main ]       # runs build/test only
+  workflow_dispatch:          # allows manual trigger of entire workflow
 
 jobs:
   # -------------------------
@@ -79,7 +79,7 @@ jobs:
   aot-publish-macos:
     runs-on: macos-latest
     needs: build-test
-    if: github.event_name == 'workflow_dispatch'
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
 
