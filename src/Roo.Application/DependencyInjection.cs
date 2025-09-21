@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Roo.Application;
 
 public static class DependencyInjection

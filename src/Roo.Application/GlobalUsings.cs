@@ -1,5 +1,5 @@
 // Global using directives
 
-global using Cocona;
+global using Microsoft.Extensions.DependencyInjection;
 global using Roo.Application;
 global using Roo.Application.Commands;

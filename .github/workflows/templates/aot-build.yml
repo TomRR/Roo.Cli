@@ -1,0 +1,28 @@
+# Template for building and uploading AOT binaries
+parameters:
+  os: ubuntu-latest       # GitHub Actions runner
+  rid: linux-x64          # .NET RuntimeIdentifier
+  artifact-name: roo-aot  # artifact name
+
+jobs:
+  aot-build:
+    runs-on: ${{ parameters.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish AOT binary
+        run: dotnet publish -c Release -r ${{ parameters.rid }} -p:PublishAot=true -o ./artifacts/${{ parameters.rid }}
+
+      - name: Smoke test binary
+        run: ./artifacts/${{ parameters.rid }}/roo --version
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ parameters.artifact-name }}-${{ parameters.rid }}
+          path: ./artifacts/${{ parameters.rid }}
