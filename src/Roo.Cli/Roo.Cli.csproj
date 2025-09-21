@@ -11,7 +11,8 @@
         <PackageId>Roo.Cli</PackageId>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>roo</ToolCommandName>
-        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <PackageOutputPath>../../nupkg</PackageOutputPath>
+        <RootNamespace>Roo.Cli</RootNamespace>
     </PropertyGroup>
 
     <!-- AOT settings only apply when explicitly requested -->

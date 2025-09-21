@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Application", "src\Roo.Application\Roo.Application.csproj", "{0A25AF35-D7A0-4795-926F-069E7FC74555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Cli", "src\Roo.Cli\Roo.Cli.csproj", "{0A25AF35-D7A0-4795-926F-069E7FC74555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Application.Tests", "tests\Roo.Application.Tests\Roo.Application.Tests.csproj", "{730C4C52-43E3-46F0-A004-C99EDCE21F96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Cli.Tests", "tests\Roo.Cli.Tests\Roo.Cli.Tests.csproj", "{730C4C52-43E3-46F0-A004-C99EDCE21F96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

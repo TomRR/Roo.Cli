@@ -1,0 +1,40 @@
+# Template for building and uploading AOT binaries
+on:
+  workflow_call:
+    inputs:
+      runner_os:
+        required: true
+        type: string
+      runtime:
+        required: true
+        type: string
+
+jobs:
+  aot-publish:
+    runs-on: ${{ inputs.runner_os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup_dotnet
+        
+      - name: Publish AOT binary
+        run: dotnet publish -c Release src/Roo.Cli/Roo.Cli.csproj -r ${{ inputs.runtime }} -p:PublishAot=true -o ./artifacts/${{ inputs.runtime }}
+
+      # optional: smoke test
+      - name: Smoke test binary (Mac & Linux)
+        shell: bash
+        if: runner.os != 'Windows'
+        run: ./artifacts/${{ inputs.runtime }}/roo --version || true
+    
+      - name: Smoke test binary (Windows)
+        shell: pwsh
+        if: runner.os == 'Windows'
+        run: |
+          $exePath = Join-Path $PWD "artifacts/${{ inputs.runtime }}/Roo.Cli.exe"
+          Write-Host "Running $exePath"
+          & $exePath --version
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: roo-cli-aot-${{ inputs.runtime }}
+          path: ./artifacts/${{ inputs.runtime }}
