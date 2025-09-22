@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <Folder Include="Commands\Clone\" />
-      <Folder Include="Commands\Status\" />
       <Folder Include="Models\" />
     </ItemGroup>
 
