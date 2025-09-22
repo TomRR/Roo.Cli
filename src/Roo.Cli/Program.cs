@@ -35,15 +35,36 @@
 //     }
 // }
 
-if (args.Length == 0)
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Roo.Cli;
+using Roo.Cli.Cli.Nuget;
+
+var builder = CliAppBuilder.Create(args);
+
+builder.Services.AddDependencies();
+
+// builder.AddCommands<InitCommand>();
+
+builder.Build();
+app.Run();
+
+// var worker = host.Services.GetRequiredService<IWorker>();
+// await worker.RunAsync();
+//
+// await host.StopAsync();
+
+var ctx = CliParser.Parse(args);
+
+var commands = new Dictionary<string, Func<CliContext, int>>(StringComparer.OrdinalIgnoreCase)
 {
-    Console.WriteLine("No arguments provided.");
-}
-else
-{
-    Console.WriteLine("Arguments:");
-    foreach (var arg in args)
-    {
-        Console.WriteLine($"- {arg}");
-    }
-}
+    ["init"] = InitCommand.Run,
+    ["--version"] = VersionCommand.Run,
+    ["-v"] = VersionCommand.Run
+};
+
+if (commands.TryGetValue(ctx.Command, out var handler))
+    return handler(ctx);
+
+Console.WriteLine($"Unknown command: {ctx.Command}");
+return 1;

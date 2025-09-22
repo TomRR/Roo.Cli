@@ -1,6 +1,4 @@
-using Roo.Application.Commands.Init;
-
-namespace Roo.Application.Commands;
+namespace Roo.Cli.Commands;
 
 public static class CommandManager
 {
