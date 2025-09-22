@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 'Which job to run? (windows/linux/macos/nuget-pack/nuget-publish/all)'
+        description: 'Which job to run? (windows/linux/macos/nuget-pack//nuget-publish/all)'
         required: true
         default: all
 
@@ -21,11 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+      - uses: ./.github/actions/setup_dotnet
 
       - name: Restore
         run: dotnet restore
@@ -35,72 +31,42 @@ jobs:
 
       - name: Test
         run: dotnet test --no-build --verbosity normal -c Release
-
+        
   # -------------------------
-  # AOT Publish per OS
+  # AOT Windows
   # -------------------------
   aot-publish-windows:
-    runs-on: windows-latest
     needs: build-test
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event.inputs.target == 'windows' || github.event.inputs.target == 'all'
-    steps:
-      - uses: actions/checkout@v4
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event.inputs.target == 'all' || github.event.inputs.target == 'windows'
+    uses: ./.github/workflows/build_aot.yml
+    with:
+      runner_os: windows-latest
+      runtime: win-x64
+    secrets: inherit
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      - name: Publish AOT (Windows)
-        run: dotnet publish -c Release -r win-x64 -p:PublishAot=true -o ./artifacts/win-x64
-
-      - name: Upload binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: rox-aot-win-x64
-          path: ./artifacts/win-x64
-
+  # -------------------------
+  # AOT Linux
+  # -------------------------
   aot-publish-linux:
-    runs-on: ubuntu-latest
     needs: build-test
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event.inputs.target == 'linux' || github.event.inputs.target == 'all'
-    steps:
-      - uses: actions/checkout@v4
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event.inputs.target == 'all' || github.event.inputs.target == 'linux'
+    uses: ./.github/workflows/build_aot.yml
+    with:
+      runner_os: ubuntu-latest
+      runtime: linux-x64
+    secrets: inherit
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      - name: Publish AOT (Linux)
-        run: dotnet publish -c Release -r linux-x64 -p:PublishAot=true -o ./artifacts/linux-x64
-
-      - name: Upload binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: rox-aot-linux-x64
-          path: ./artifacts/linux-x64
-
+  # -------------------------
+  # AOT macOS
+  # -------------------------
   aot-publish-macos:
-    runs-on: macos-latest
     needs: build-test
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event.inputs.target == 'macos' || github.event.inputs.target == 'all'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
-
-      - name: Publish AOT (macOS)
-        run: dotnet publish -c Release -r osx-arm64 -p:PublishAot=true -o ./artifacts/osx-arm64
-
-      - name: Upload binaries
-        uses: actions/upload-artifact@v4
-        with:
-          name: rox-aot-osx-arm64
-          path: ./artifacts/osx-arm64
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' ||  github.event.inputs.target == 'all' || github.event.inputs.target == 'macos'
+    uses: ./.github/workflows/build_aot.yml
+    with:
+      runner_os: macos-latest
+      runtime: osx-arm64
+    secrets: inherit
 
   # -------------------------
   # NuGet
@@ -108,37 +74,34 @@ jobs:
   nuget-pack:
     runs-on: ubuntu-latest
     needs: build-test
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event.inputs.target == 'nuget-pack' || github.event.inputs.target == 'all'
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main' || github.event.inputs.target == 'all' || github.event.inputs.target == 'nuget-pack' || github.event.inputs.target == 'nuget-publish'
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+      - uses: ./.github/actions/setup_dotnet
+        
       - name: Restore
         run: dotnet restore
       - name: Pack NuGet
-        run: dotnet pack -c Release -o ./nupkg
+        run: dotnet pack src/Roo.Cli/Roo.Cli.csproj -c Release -o ./nupkg
       - name: Upload NuGet artifact
         uses: actions/upload-artifact@v4
         with:
-          name: roo-nuget-package
+          name: roo-cli-nuget-package
           path: ./nupkg
+          retention-days: ${{ startsWith(github.ref, 'refs/tags/') && '365' || github.ref == 'refs/heads/main' && '3' || '1' }}
           
   nuget-publish:
     runs-on: ubuntu-latest
     needs: nuget-pack
-    if: ${{ github.event.inputs.target == 'nuget-publish' || github.event.inputs.target == 'all' }}
+    if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.target == 'nuget-publish'
     steps:
       - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '9.0.x'
+      - uses: ./.github/actions/setup_dotnet
+        
       - name: Download NuGet artifact
         uses: actions/download-artifact@v4
         with:
-          name: roo-nuget-package
+          name: roo-cli-nuget-package
           path: ./nupkg
       - name: Push to NuGet
         run: dotnet nuget push ./nupkg/*.nupkg \

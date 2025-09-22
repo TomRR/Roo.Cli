@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e  # exit on error
 
-chmod +x ./install_as_nuget_tool.sh ./install_aot_mac.sh ./install_aot_linux.sh ./install_aot_win.sh
+chmod +x ./scripts/install_as_nuget_tool.sh ./scripts/install_aot_mac.sh ./scripts/install_aot_linux.sh ./scripts/install_aot_win.sh
 
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
@@ -39,11 +39,11 @@ echo ""
 case "${target_os}" in
   nuget)
     log "Running NuGet installer..."
-    ./install_as_nuget_tool.sh
+    ./scripts/install_as_nuget_tool.sh
     ;;
   mac)
     log "Running Mac installer..."
-    ./install_aot_mac.sh
+    ./scripts/install_aot_mac.sh
     ;;
   linux)
     log "Running Linux installer..."
@@ -51,7 +51,7 @@ case "${target_os}" in
     ;;
   windows)
     log "Running Windows installer..."
-    ./install_aot_windows.sh
+    ./scripts/install_aot_windows.sh
     ;;
   cleanup)
     log "Exit..."
@@ -60,6 +60,6 @@ case "${target_os}" in
 esac
 
 echo ""
-log "Installation finished successfully ✅"
+log "Roo.Cli installation finished successfully ✅"
 which roo
 log "Try running: 'roo --help' or 'roo --version'"
