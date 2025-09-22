@@ -56,10 +56,8 @@ using Roo.Cli.Commands.Status;
 // await host.StopAsync();
 
 var builder = CliAppBuilder.Create(args);
-builder.AddDependencies(service =>
-{
-    service.AddCooDependencies();
-});
+builder.Services.AddCooDependencies();
+
 builder.AddCommand<InitCommand>("init");
 builder.AddCommand<StatusCommand>("status", "-s");
 

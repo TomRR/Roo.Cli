@@ -6,7 +6,10 @@ public class CliAppBuilder
 {
     private readonly IHostBuilder _builder;
     private readonly List<Action<IHost>> _postBuildActions = new();
-    
+
+    // Internal collection to allow direct service registration
+    public IServiceCollection Services { get; } = new ServiceCollection();
+
     private CliAppBuilder(IHostBuilder builder)
     {
         _builder = builder;
@@ -27,7 +30,7 @@ public class CliAppBuilder
 
     public CliAppBuilder AddDependencies(Action<IServiceCollection> configureServices)
     {
-        _builder.ConfigureServices(configureServices);
+        configureServices(Services);
         return this;
     }
 
@@ -39,11 +42,22 @@ public class CliAppBuilder
 
     public CliApp Build()
     {
+        // Merge the collected services into the HostBuilder
+        _builder.ConfigureServices(s =>
+        {
+            foreach (var service in Services)
+            {
+                s.Add(service);
+            }
+        });
+
         var host = _builder.Build();
+
         foreach (var action in _postBuildActions)
         {
             action(host);
         }
+
         return new CliApp(host);
     }
 
