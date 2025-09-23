@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Roo.Cli.Cli.Nuget;
+namespace TomRR.Cli.Tooling;
 public class CliAppBuilder
 {
     private readonly IHostBuilder _builder;

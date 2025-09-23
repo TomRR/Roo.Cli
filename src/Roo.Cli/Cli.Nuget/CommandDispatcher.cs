@@ -1,4 +1,4 @@
-namespace Roo.Cli.Cli.Nuget;
+namespace TomRR.Cli.Tooling;
 public class CommandDispatcher
 {
     private readonly IServiceProvider _provider;
@@ -26,16 +26,22 @@ public class CommandDispatcher
             Console.WriteLine("Available commands: " + string.Join(", ", _commands.Keys));
             return;
         }
+        
 
         var commandName = args[0];
         if (_commands.TryGetValue(commandName, out var type))
         {
             var cmd = (ICommand)_provider.GetRequiredService(type);
-            await cmd.RunAsync(args.Skip(1).ToArray());
+
+            // var remaining = args.Skip(1).ToArray();
+            // await CommandParser.ParseAndRunAsync(cmd, remaining);
+            var remaining = args.Skip(1).ToArray();
+            CommandDispatcher_Binders.BindAndRun(cmd, remaining);
         }
         else
         {
             Console.WriteLine($"Unknown command: {commandName}");
         }
     }
+
 }

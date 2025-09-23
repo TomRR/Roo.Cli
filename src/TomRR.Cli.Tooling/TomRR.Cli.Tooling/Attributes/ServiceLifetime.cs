@@ -1,4 +1,4 @@
-namespace Roo.Cli.Cli.Nuget.Attributes;
+namespace TomRR.Cli.Tooling.Attributes;
 
 /// <summary>
 /// Specifies the lifetime of a service in an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.

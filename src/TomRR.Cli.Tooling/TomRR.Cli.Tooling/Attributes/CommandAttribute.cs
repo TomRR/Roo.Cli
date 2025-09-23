@@ -1,4 +1,4 @@
-namespace Roo.Cli.Cli.Nuget.Attributes;
+namespace TomRR.Cli.Tooling.Attributes;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public sealed class CommandAttribute : Attribute

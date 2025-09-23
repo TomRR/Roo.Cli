@@ -1,6 +1,4 @@
-using Roo.Cli.Cli.Nuget.Commands;
-
-namespace Roo.Cli.Cli.Nuget;
+namespace TomRR.Cli.Tooling;
 
 public static class CliAppBuilderExtensions
 {

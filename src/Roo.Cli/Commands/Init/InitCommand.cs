@@ -36,19 +36,47 @@ namespace Roo.Cli.Commands.Init;
 //         return 0;
 //     }
 // }
+// public class InitCommand : ICommand
+// {
+//     private readonly ILogger<InitCommand> _logger;
+//
+//     public InitCommand(ILogger<InitCommand> logger)
+//     {
+//         _logger = logger;
+//     }
+//
+//     public Task RunAsync(string[] args)
+//     {
+//         Console.WriteLine("DONE");
+//         // _logger.LogInformation("Repository initialized.");
+//         return Task.CompletedTask;
+//     }
+//
+//     public Task RunAsync()
+//     {
+//         throw new NotImplementedException();
+//     }
+// }
+
 public class InitCommand : ICommand
 {
-    private readonly ILogger<InitCommand> _logger;
+    [Option("--path", "-p")]
+    public string Path { get; set; } = ".";
 
-    public InitCommand(ILogger<InitCommand> logger)
-    {
-        _logger = logger;
-    }
+    [Option("--force", "-f", hasValue: false)]
+    public bool Force { get; set; }
+
+    [Argument(0)]
+    public string? Template { get; set; }
 
     public Task RunAsync(string[] args)
     {
-        Console.WriteLine("DONE");
-        // _logger.LogInformation("Repository initialized.");
+        throw new NotImplementedException();
+    }
+
+    public Task RunAsync()
+    {
+        Console.WriteLine($"Init with Path={Path}, Force={Force}, Template={Template}");
         return Task.CompletedTask;
     }
 }

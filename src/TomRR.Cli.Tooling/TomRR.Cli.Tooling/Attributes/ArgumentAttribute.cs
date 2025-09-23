@@ -1,4 +1,4 @@
-namespace Roo.Cli.Cli.Nuget.Attributes;
+namespace TomRR.Cli.Tooling.Attributes;
 
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public sealed class ArgumentAttribute : Attribute

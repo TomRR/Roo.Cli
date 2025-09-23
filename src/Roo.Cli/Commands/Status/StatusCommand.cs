@@ -20,4 +20,11 @@ public class StatusCommand : ICommand
         _logger.LogInformation("Repository initialized.");
         return Task.CompletedTask;
     }
+
+    public Task RunAsync()
+    {
+        Console.WriteLine($"status + {_test.Get()}");
+        _logger.LogInformation("Repository initialized.");
+        return Task.CompletedTask;
+    }
 }

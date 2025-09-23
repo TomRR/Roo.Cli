@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Hosting;
 
-namespace Roo.Cli.Cli.Nuget;
+namespace TomRR.Cli.Tooling;
 public class CliApp
 {
     private readonly IHost _host;
