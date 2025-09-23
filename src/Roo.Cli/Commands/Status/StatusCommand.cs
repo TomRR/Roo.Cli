@@ -1,30 +1,23 @@
 using Microsoft.Extensions.Logging;
-using Roo.Cli.Cli.Nuget;
+using Spectre.Console;
 
 namespace Roo.Cli.Commands.Status;
 
+[Command("status")]
 public class StatusCommand : ICommand
 {
     private readonly ILogger<StatusCommand> _logger;
-    private readonly ITest _test;
 
-    public StatusCommand(ILogger<StatusCommand> logger, ITest test)
+    public StatusCommand(ILogger<StatusCommand> logger)
     {
         _logger = logger;
-        _test = test;
-    }
-
-    public Task RunAsync(string[] args)
-    {
-        Console.WriteLine($"status + {_test.Get()}");
-        _logger.LogInformation("Repository initialized.");
-        return Task.CompletedTask;
     }
 
     public Task RunAsync()
     {
-        Console.WriteLine($"status + {_test.Get()}");
         _logger.LogInformation("Repository initialized.");
+        AnsiConsole.Write(new Markup("[bold yellow]Hello[/] [red]World![/]"));
+
         return Task.CompletedTask;
     }
 }

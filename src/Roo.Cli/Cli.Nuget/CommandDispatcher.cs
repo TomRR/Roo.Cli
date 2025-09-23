@@ -9,17 +9,21 @@ public class CommandDispatcher
         _provider = provider;
     }
 
-    public void Register<TCommand>(string name, string? shortName = null)
+    public void Register<TCommand>(string name, params string[] shortNames)
         where TCommand : class, ICommand
     {
         _commands[name] = typeof(TCommand);
 
-        if (!string.IsNullOrWhiteSpace(shortName))
+        foreach (var shortName in shortNames.Where(s => !string.IsNullOrWhiteSpace(s)))
+        {
             _commands[shortName!] = typeof(TCommand);
+        }
     }
 
     public async Task DispatchAsync(string[] args)
     {
+        await Task.CompletedTask;
+
         if (args.Length == 0)
         {
             Console.WriteLine("No command specified.");
@@ -36,12 +40,15 @@ public class CommandDispatcher
             // var remaining = args.Skip(1).ToArray();
             // await CommandParser.ParseAndRunAsync(cmd, remaining);
             var remaining = args.Skip(1).ToArray();
-            CommandDispatcher_Binders.BindAndRun(cmd, remaining);
+            await CommandDispatcher_Binders.BindAndRun(cmd, remaining);
+            
         }
         else
         {
             Console.WriteLine($"Unknown command: {commandName}");
         }
+        await Task.CompletedTask;
+
     }
 
 }

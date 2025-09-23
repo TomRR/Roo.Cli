@@ -8,15 +8,15 @@ public sealed class CommandAttribute : Attribute
     
     public string? Description { get; }
     
-    public ServiceLifetime? DependencyLifetime { get; }
+    // public ServiceLifetime? DependencyLifetime { get; }
 
     public CommandAttribute() { }
 
-    public CommandAttribute(string? name = null, string? shortName = null, string? description = null, ServiceLifetime? dependencyLifetime = null)
+    public CommandAttribute(string? name = null, string? shortName = null, string? description = null/*, ServiceLifetime? dependencyLifetime = null*/)
     {
         Name = name;
         ShortName = shortName;
         Description = description;
-        DependencyLifetime = dependencyLifetime;
+        // DependencyLifetime = dependencyLifetime;
     }
 }

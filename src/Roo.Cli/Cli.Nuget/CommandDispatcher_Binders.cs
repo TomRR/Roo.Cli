@@ -15,11 +15,11 @@ internal static class CommandDispatcher_Binders
                 await init.RunAsync();
                 break;
 
-            // case StatusCommand status:
-            //     StatusCommand_Binder.Bind(status, args);
-            //     await status.RunAsync();
-            //     break;
-            //
+            case StatusCommand status:
+                StatusCommand_Binder.Bind(status, args);
+                await status.RunAsync();
+                break;
+            
             // case VersionCommand version:
             //     VersionCommand_Binder.Bind(version, args);
             //     await version.RunAsync();

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Roo.Cli.Cli.Nuget;
+using Spectre.Console;
 
 namespace Roo.Cli.Commands.Init;
 //
@@ -58,8 +59,11 @@ namespace Roo.Cli.Commands.Init;
 //     }
 // }
 
+[Command("init")]
 public class InitCommand : ICommand
 {
+    private readonly ILogger<InitCommand> _logger;
+
     [Option("--path", "-p")]
     public string Path { get; set; } = ".";
 
@@ -69,6 +73,10 @@ public class InitCommand : ICommand
     [Argument(0)]
     public string? Template { get; set; }
 
+    public InitCommand(ILogger<InitCommand> logger)
+    {
+        _logger = logger;
+    }
     public Task RunAsync(string[] args)
     {
         throw new NotImplementedException();
@@ -77,6 +85,10 @@ public class InitCommand : ICommand
     public Task RunAsync()
     {
         Console.WriteLine($"Init with Path={Path}, Force={Force}, Template={Template}");
+        _logger.LogInformation("Repository initialized.");
+        AnsiConsole.Write(new Markup("[bold yellow]Hello[/] [red]World![/]"));
+
+
         return Task.CompletedTask;
     }
 }

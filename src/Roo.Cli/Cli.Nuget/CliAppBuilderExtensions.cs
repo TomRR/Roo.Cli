@@ -3,7 +3,7 @@ namespace TomRR.Cli.Tooling;
 public static class CliAppBuilderExtensions
 {
     public static CliAppBuilder AddCommand<TCommand>(
-        this CliAppBuilder builder, string name, string? shortName = null)
+        this CliAppBuilder builder, string name, params string[] shortNames)
         where TCommand : class, ICommand
     {
         builder.AddDependencies(services =>
@@ -19,7 +19,7 @@ public static class CliAppBuilderExtensions
         builder.AddPostBuildAction(host =>
         {
             var dispatcher = host.Services.GetRequiredService<CommandDispatcher>();
-            dispatcher.Register<TCommand>(name, shortName);
+            dispatcher.Register<TCommand>(name, shortNames);
         });
 
         return builder;

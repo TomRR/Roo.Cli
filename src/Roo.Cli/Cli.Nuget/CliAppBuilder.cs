@@ -15,7 +15,7 @@ public class CliAppBuilder
         _builder = builder;
     }
 
-    public static CliAppBuilder Create(string[] args)
+    public static CliAppBuilder CreateDefaultBuilder(string[] args)
     {
         var builder = Host.CreateDefaultBuilder(args)
             .ConfigureLogging(logging =>
@@ -25,6 +25,11 @@ public class CliAppBuilder
                 logging.AddDebug();
             });
 
+        return new CliAppBuilder(builder);
+    }
+    public static CliAppBuilder CreateSlimBuilder(string[] args)
+    {
+        var builder = new HostBuilder();
         return new CliAppBuilder(builder);
     }
 
