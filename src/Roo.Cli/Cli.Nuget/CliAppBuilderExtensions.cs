@@ -1,3 +1,5 @@
+using Roo.Cli.Cli.Nuget.Commands;
+
 namespace Roo.Cli.Cli.Nuget;
 
 public static class CliAppBuilderExtensions
@@ -10,6 +12,8 @@ public static class CliAppBuilderExtensions
         {
             services.AddTransient<TCommand>();
             services.AddTransient<ICommand, TCommand>();
+            
+
             services.AddSingleton<CommandDispatcher>(); // idempotent
         });
 

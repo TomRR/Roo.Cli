@@ -39,6 +39,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Roo.Cli;
 using Roo.Cli.Cli.Nuget;
+using Roo.Cli.Cli.Nuget.Commands;
 using Roo.Cli.Commands.Status;
 
 // var builder = CliAppBuilder.Create(args);
@@ -58,6 +59,8 @@ using Roo.Cli.Commands.Status;
 var builder = CliAppBuilder.Create(args);
 builder.Services.AddCooDependencies();
 
+builder.AddCommand<VersionCommand>("--version", "-v");
+builder.AddCommand<HelpCommand>("--help", "-h");
 builder.AddCommand<InitCommand>("init");
 builder.AddCommand<StatusCommand>("status", "-s");
 
