@@ -1,0 +1,19 @@
+# Roo CLI configuration
+# This is the configuration file for Roo.
+# It defines all the repositories that make up this project workspace.
+
+# The [[repositories]] syntax defines an item in an array of tables.
+# Each block represents one repository.
+
+#[[repositories]]
+# A friendly name for the repository, used in status outputs.
+#name = "aspire-app-host"
+# The SSH or HTTPS URL for cloning.
+#url = "git@github.com:our-org/aspire-app-host.git"
+# The local path relative to this roo.toml file.
+#path = "src/AspireHost"
+
+[[repositories]]
+name = "api-design"
+url = "XXX"
+path = "../../FinanceApp/api-design"                                           

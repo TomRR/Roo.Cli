@@ -1,11 +1,11 @@
-namespace Roo.Cli.Commands.Init;
+namespace Roo.Cli.Cli.Nuget.CommandBinders;
 
 public static class InitCommand_Binder
 {
     public static void Bind(InitCommand cmd, string[] args)
     {
-        int position = 0;
-        for (int i = 0; i < args.Length; i++)
+        var position = 0;
+        for (var i = 0; i < args.Length; i++)
         {
             var token = args[i];
 
@@ -15,7 +15,7 @@ public static class InitCommand_Binder
                 case "-p":
                     if (i + 1 < args.Length)
                     {
-                        cmd.Path = args[++i];
+                        cmd.FilePath = args[++i];
                     }
                     else
                     {

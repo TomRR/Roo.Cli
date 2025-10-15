@@ -1,9 +1,14 @@
-namespace Roo.Cli.Cli.Nuget.Commands;
+namespace Roo.Cli.Commands.Version;
 
-[Command]
+[Command("version")]
 public class VersionCommand :  ICommand
 {
-    public VersionCommand() { }
+    private readonly IRooLogger _logger;
+
+    public VersionCommand(IRooLogger logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
     public Task RunAsync(string[] args)
     {
         Console.WriteLine("Version");
@@ -13,7 +18,7 @@ public class VersionCommand :  ICommand
 
     public Task RunAsync()
     {
-        Console.WriteLine("Version");
+        _logger.Log("VersionInfo:" + VersionInfo.Version);
         return Task.CompletedTask;
     }
 }

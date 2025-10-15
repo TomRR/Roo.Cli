@@ -40,7 +40,7 @@ public class CommandDispatcher
             // var remaining = args.Skip(1).ToArray();
             // await CommandParser.ParseAndRunAsync(cmd, remaining);
             var remaining = args.Skip(1).ToArray();
-            await CommandDispatcher_Binders.BindAndRun(cmd, remaining);
+            await CommandDispatcherBinders.BindAndRun(cmd, remaining);
             
         }
         else

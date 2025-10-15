@@ -8,10 +8,9 @@ public static class CliAppBuilderExtensions
     {
         builder.AddDependencies(services =>
         {
-            services.AddTransient<TCommand>();
-            services.AddTransient<ICommand, TCommand>();
+            services.AddSingleton<TCommand>();
+            services.AddSingleton<ICommand, TCommand>();
             
-
             services.AddSingleton<CommandDispatcher>(); // idempotent
         });
 
