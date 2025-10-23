@@ -4,6 +4,7 @@ public interface IDirectoryService
 {
     string GetCurrentDirectory();
     bool DirectoryExists(string path);
+    public Result<Success, Error> DeleteDirectory(string path,  bool recursive = false);
 }
 
 public class DirectoryService : IDirectoryService
@@ -15,6 +16,16 @@ public class DirectoryService : IDirectoryService
 
     public bool DirectoryExists(string path)
     {
-        throw new NotImplementedException();
+        return Directory.Exists(path);
+    }
+    public Result<Success, Error> DeleteDirectory(string path,  bool recursive = false)
+    {
+        Directory.Delete(path, true);
+
+        if (Directory.Exists(path))
+        {
+            
+        }
+        return Result.Success;
     }
 }

@@ -4,7 +4,7 @@ namespace Roo.Cli.Commands.Init;
 public sealed class InitCommand : ICommand
 {
     private readonly IRooLogger _logger;
-    private readonly IFileService _fileService;
+    private readonly IRooConfigService _rooConfigService;
 
     [Option("--path", "-p")]
     public string FilePath { get; set; } = Directory.GetCurrentDirectory();
@@ -15,52 +15,48 @@ public sealed class InitCommand : ICommand
     [Argument(0)]
     public string? Template { get; set; }
 
-    public InitCommand(IRooLogger logger, IFileService fileService)
+    public InitCommand(IRooLogger logger, IRooConfigService rooConfigService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+        _rooConfigService = rooConfigService ?? throw new ArgumentNullException(nameof(rooConfigService));
     }
-    public Task RunAsync()
+    public async Task RunAsync()
     {
-        _logger.Log($"Init with Path={FilePath}, Force={Force}, Template={Template}");
-        _logger.Log("[bold yellow]Repository[/] [red]initialized![/]\n");
+        _logger.LogApplicationNameFiglet();
+        _logger.Log(LoggingComponents.GetInitCommandRule());
+
+        await Task.CompletedTask;
+
+        _logger.Log($"Init with\n{PathString()}\n{ForceString()}\n{TemplateString()}", additionalLineBreaksAfter:1);
         
-         var filePath = Path.Combine(FilePath, InitConfigFileName);
+        var result = _rooConfigService.InitRooConfig(FilePath, Force);
 
-         if (_fileService.FileExists(filePath))
-         {
-             _logger.Log("roo.toml already exists!");
-             return Task.CompletedTask;
+        if (result.HasFailed)
+        {
+            _logger.LogError(result.Error);
+            return;
+        }
 
-         }
-
-         _fileService.WriteAllText(filePath, InitConfigFileContent);
-         _logger.Log($"roo.toml created at Path={FilePath}");
-         
-        return Task.CompletedTask;
+        _logger.Log(result.Value);
+        _logger.LogTaskCompleted();
     }
-    
-    private const string InitConfigFileName = "roo.toml";
-    private const string InitConfigFileContent = $@"# Roo CLI configuration
-# This is the configuration file for Roo.
-# It defines all the repositories that make up this project workspace.
 
-# The [[repositories]] syntax defines an item in an array of tables.
-# Each block represents one repository.
-
-[[repositories]]
-# A friendly name for the repository, used in status outputs.
-#name = ""aspire-app-host""
-# The SSH or HTTPS URL for cloning.
-#url = ""git@github.com:our-org/aspire-app-host.git""
-# The local path relative to this roo.toml file.
-#path = ""src/AspireHost""
-
-title = ""Roo Example""
-
-[[repositories]]
-name = ""XXX""
-url = ""XXX""
-path = ""XXX""                                           
-";
+    public string PathString()
+    {
+        return $"[bold yellow]Path='{FilePath}'[/]";
+    }
+    public string ForceString()
+    {
+        var forceMessage = Force 
+            ? $"{Icons.CheckIcon}" 
+            : $"{Icons.ErrorIcon}";
+        return $"Force={forceMessage}";
+    }
+    public string TemplateString()
+    {
+        var templateMessage = string.IsNullOrWhiteSpace(Template) 
+            ? Icons.ErrorIcon 
+            : $"{Icons.CheckIcon} {Template}";
+        return $"Template={templateMessage}";
+    }
 }

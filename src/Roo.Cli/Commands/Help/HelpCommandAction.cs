@@ -1,18 +1,25 @@
+using ResultType;
+
 namespace Roo.Cli.Commands.Help;
 
 public class HelpCommandAction : ICommandAction<HelpCommand>
 {
-    public async Task<Result<BufferedCommandResult, Error>> RunCommandAsync(Repository repository)
+    public async Task<Result<RepositoryActionResponse, Error, Skipped>> RunCommandAsync(RepositoryDto repository, bool force = false)
     {
         var result = await CliWrap.Cli.Wrap("git")
             .WithArguments(args => args
-                .Add("clone")
+                .Add("help")
                 .Add($"{repository.Url}")
             )
-            .WithStandardOutputPipe(PipeTarget.ToDelegate(ConsoleLogHelper.GetConsoleLog))
+            .WithStandardOutputPipe(PipeTarget.ToDelegate(GetConsoleLog))
             .ExecuteBufferedAsync();
 
-        return result;
+        return RepositoryActionResponse.Create(repository, result.StandardOutput);
+    }
+    private string _output = string.Empty;
 
-    } 
+    private void GetConsoleLog(string output)
+    {
+        _output = _output +  output + "\n";
+    }
 }

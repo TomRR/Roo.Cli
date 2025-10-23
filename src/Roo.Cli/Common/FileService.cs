@@ -3,6 +3,7 @@ namespace Roo.Cli.Common;
 public interface IFileService
 {
     public void WriteAllText(string path, string content);
+    public void Delete(string path);
     public bool FileExists(string path);
     public string ReadFile(string path);
     public string? FindSpecFile(string dir);
@@ -12,6 +13,10 @@ public class FileService : IFileService
     public void WriteAllText(string path, string content)
     {
         File.WriteAllText(path, content);
+    }
+    public void Delete(string path)
+    {
+        File.Delete(path);
     }
 
     public bool FileExists(string path)

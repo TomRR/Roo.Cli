@@ -6,6 +6,7 @@ public static class RooTomlReader
         var repositories = new List<Repository>();
         Repository? current = null;
         string? title = null;
+        Owner? owner = null;
 
         var lines = File.ReadAllLines(path);
         foreach (var line in lines)
@@ -25,7 +26,8 @@ public static class RooTomlReader
                 current = new Repository();
                 {
                     continue;
-                }            }
+                }            
+            }
 
             // Parse key/value pairs
             var parts = trimmed.Split('=', 2);
@@ -52,6 +54,8 @@ public static class RooTomlReader
                     "name" => current with { Name = value },
                     "url" => current with { Url = value },
                     "path" => current with { Path = value },
+                    "tags" => current with { Tags = value },
+                    "description" => current with { Description = value },
                     _ => current
                 };
             }

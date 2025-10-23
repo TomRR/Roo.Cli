@@ -14,6 +14,14 @@ public static class CloneCommand_Binder
                 case "-i":
                     cmd.Interactive = true;
                     break;
+                case "--force":
+                case "-f":
+                    cmd.Force = true;
+                    break;
+                case "--clear":
+                case "-c":
+                    cmd.Clear = true;
+                    break;
             }
         }
     }

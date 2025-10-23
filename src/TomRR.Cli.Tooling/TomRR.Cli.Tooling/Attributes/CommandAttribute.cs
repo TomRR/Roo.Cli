@@ -8,7 +8,7 @@ public sealed class CommandAttribute : Attribute
     public string? Description { get; }
     
 
-    public CommandAttribute() { }
+    // public CommandAttribute() { }
 
     public CommandAttribute(string? name = null, string? description = null, string? shortName = null)
     {

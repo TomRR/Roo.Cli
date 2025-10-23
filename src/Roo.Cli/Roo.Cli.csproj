@@ -28,11 +28,15 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
       <PackageReference Include="Spectre.Console" Version="0.51.1" />
-      <PackageReference Include="TomRR.Core.ResultType" Version="0.0.5" />
+      <PackageReference Include="TomRR.Core.ResultType" Version="0.0.6" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\TomRR.Cli.Tooling\TomRR.Cli.Tooling\TomRR.Cli.Tooling.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Commands\Checkout\" />
     </ItemGroup>
 
 </Project>

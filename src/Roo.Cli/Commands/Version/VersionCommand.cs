@@ -9,15 +9,11 @@ public class VersionCommand :  ICommand
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-    public Task RunAsync(string[] args)
-    {
-        Console.WriteLine("Version");
-        return Task.CompletedTask;
-
-    }
 
     public Task RunAsync()
     {
+        _logger.Log("Clone");
+
         _logger.Log("VersionInfo:" + VersionInfo.Version);
         return Task.CompletedTask;
     }

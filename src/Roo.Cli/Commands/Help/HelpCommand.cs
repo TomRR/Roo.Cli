@@ -1,28 +1,22 @@
 namespace Roo.Cli.Commands.Help;
 
 [Command("--help", "-h", "-?")]
-public class HelpCommand  : RooCommandBase
+public class HelpCommand  : ICommand
 {
     private readonly ICommandAction<HelpCommand> _action;
     private readonly IRooLogger _logger;
-    public HelpCommand(ICommandAction<HelpCommand> action, IRooLogger logger, IRooConfigRetriever configRetriever)        
-        : base(logger, configRetriever)
+    public HelpCommand(ICommandAction<HelpCommand> action, IRooLogger logger)        
     {
         _action = action ?? throw new ArgumentNullException(nameof(action));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
     
-    public override async Task RunAsync()
+    public async Task RunAsync() => await RunHelpCommandAsync();
+    
+    private async Task RunHelpCommandAsync()
     {
-        await WithRooConfigAsync(RunStatusCommandAsync);
-    }
-    private async Task RunStatusCommandAsync(Repository repository)
-    {
-        _logger.Log($"Help");
+        _logger.Log("Help");
 
-        // var commandResult = await _action.RunCommandAsync(repository);
-        //
-        // _logger.Log($"Command succeeded: {commandResult.IsSuccess}");
-        // _logger.Log(ConsoleLogHelper.Output);
+        await Task.CompletedTask;
     }
 }
