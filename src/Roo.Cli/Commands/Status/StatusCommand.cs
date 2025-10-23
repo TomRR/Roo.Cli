@@ -76,19 +76,22 @@ public class StatusCommand : RooCommandBase
         {
             AnsiConsole.MarkupLine("[orange1]Modified files:[/]");
             foreach (var file in parsed.ModifiedFiles)
+            {
                 AnsiConsole.MarkupLine($"  [grey]- {file}[/]");
-        }
+            }        }
 
         if (parsed.UntrackedFiles.Any())
         {
             AnsiConsole.MarkupLine("[yellow]Untracked files:[/]");
             foreach (var file in parsed.UntrackedFiles)
+            {
                 AnsiConsole.MarkupLine($"  [grey]- {file}[/]");
-        }
+            }        }
 
         if (parsed.Ahead > 0 || parsed.Behind > 0)
+        {
             AnsiConsole.MarkupLine($"[blue]Ahead {parsed.Ahead}, Behind {parsed.Behind}[/]");
-
+        }
         _logger.Log(LoggingComponents.EmptyRule());
     }
 }

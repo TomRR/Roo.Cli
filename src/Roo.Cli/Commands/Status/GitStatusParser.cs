@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 
+namespace Roo.Cli.Commands.Status;
+
 public interface IGitStatusParser
 {
     public GitRepoStatusInfo Parse(string output);
@@ -17,58 +19,119 @@ public class GitStatusParser : IGitStatusParser
 
         foreach (var line in lines)
         {
-            if (line.StartsWith("# branch.head"))
+            switch (line)
             {
-                info.BranchHeadName = line.Replace("# branch.head", "").Trim();
-            }
-            if (line.StartsWith("# branch.upstream"))
-            {
-                info.BranchUpstreamName = line.Replace("# branch.upstream", "").Trim();
-            }
-            else if (line.StartsWith("# branch.ab"))
-            {
-                var match = Regex.Match(line, @"# branch\.ab \+(\d+) -(\d+)");
-                if (match.Success)
-                {
-                    info.Ahead = int.Parse(match.Groups[1].Value);
-                    info.Behind = int.Parse(match.Groups[2].Value);
-                }
-            }
-            else if (line.StartsWith("? "))
-            {
-                info.UntrackedFiles.Add(line[2..].Trim());
-            }
-            else if (Regex.IsMatch(line, @"^[12] "))
-            {
-                // porcelain v2 format for changed files starts with '1' or '2'
-                // Example: "1 .M N... ..."
-                var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length > 1)
-                {
-                    var flags = parts[1];
-                    if (flags.Contains('M') || flags.Contains('A') || flags.Contains('D'))
+                case var l when l.StartsWith("# branch.head"):
+                    info.BranchHeadName = l.Replace("# branch.head", "").Trim();
+                    break;
+
+                case var l when l.StartsWith("# branch.upstream"):
+                    info.BranchUpstreamName = l.Replace("# branch.upstream", "").Trim();
+                    break;
+
+                case var l when l.StartsWith("# branch.ab"):
+                    var match = Regex.Match(l, @"# branch\.ab \+(\d+) -(\d+)");
+                    if (match.Success)
                     {
-                        var file = parts.Last();
-                        info.ModifiedFiles.Add(file);
+                        info.Ahead = int.Parse(match.Groups[1].Value);
+                        info.Behind = int.Parse(match.Groups[2].Value);
                     }
-                }
+                    break;
+
+                case var l when l.StartsWith("? "):
+                    info.UntrackedFiles.Add(l[2..].Trim());
+                    break;
+
+                case var l when l.StartsWith("! "):
+                    info.IgnoredFiles.Add(l[2..].Trim());
+                    break;
+
+                case var l when Regex.IsMatch(l, @"^[12] "):
+                    ParseChangedFileLine(l, info);
+                    break;
+
+                default:
+                    // Anything else unexpected
+                    break;
             }
         }
 
-        // Determine status
-        if (info.ModifiedFiles.Count > 0)
-            info.Status = RepoStatus.Modified;
-        else if (info.UntrackedFiles.Count > 0)
-            info.Status = RepoStatus.Untracked;
-        else if (info.Ahead > 0 && info.Behind > 0)
-            info.Status = RepoStatus.Diverged;
-        else if (info.Ahead > 0)
-            info.Status = RepoStatus.Ahead;
-        else if (info.Behind > 0)
-            info.Status = RepoStatus.Behind;
-        else
-            info.Status = RepoStatus.Clean;
-
+        // Determine overall repo status
+        info.Status = DetermineRepoStatus(info);
         return info;
+    }
+
+    private static void ParseChangedFileLine(string line, GitRepoStatusInfo info)
+    {
+        var parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length < 2) return;
+
+        var xy = parts[1];
+        var file = parts.Last();
+
+        char x = xy.Length > 0 ? xy[0] : '.';
+        char y = xy.Length > 1 ? xy[1] : '.';
+
+        // X = index (staged)
+        switch (x)
+        {
+            case 'A':
+            case 'M':
+            case 'D':
+            case 'R':
+            case 'C':
+                info.StagedFiles.Add(file);
+                break;
+            case 'U':
+                info.ConflictedFiles.Add(file);
+                break;
+        }
+
+        // Y = worktree (unstaged)
+        switch (y)
+        {
+            case 'M':
+                info.ModifiedFiles.Add(file);
+                break;
+            case 'D':
+                info.DeletedFiles.Add(file);
+                break;
+            case 'U':
+                info.ConflictedFiles.Add(file);
+                break;
+        }
+    }
+
+    private static RepoStatus DetermineRepoStatus(GitRepoStatusInfo info)
+    {
+        if (info.ConflictedFiles.Count > 0)
+        {
+            return RepoStatus.Error;
+        }        
+        if (info.UntrackedFiles.Count > 0)
+        {
+            return RepoStatus.Untracked;
+        }        
+        if (info.StagedFiles.Count > 0)
+        {
+            return RepoStatus.Staged;
+        }        
+        if (info.ModifiedFiles.Count > 0 || info.DeletedFiles.Count > 0)
+        {
+            return RepoStatus.Modified;
+        }        
+        if (info.Ahead > 0 && info.Behind > 0)
+        {
+            return RepoStatus.Diverged;
+        }        
+        if (info.Ahead > 0)
+        {
+            return RepoStatus.Ahead;
+        }        
+        if (info.Behind > 0)
+        {
+            return RepoStatus.Behind;
+        }
+        return RepoStatus.Clean;
     }
 }
