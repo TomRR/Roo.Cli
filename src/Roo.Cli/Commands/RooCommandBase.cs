@@ -32,6 +32,7 @@ public abstract class RooCommandBase : ICommand
                 return;
             }
             await repositoryAction(repo);
+            _logger.Log(LoggingComponents.GreyDimRule());
         });
     }
     private Func<RepositoryDto, Task> WrapRepositoryAction(Func<RepositoryDto, Task> repositoryAction)
@@ -43,6 +44,7 @@ public abstract class RooCommandBase : ICommand
                 return;
             }
             await repositoryAction(repo);
+            _logger.Log(LoggingComponents.GreyDimRule());
         };
     }
 

@@ -21,12 +21,9 @@ public class CloneCommand : RooCommandBase
     
     [Option("--interactive", "-i", hasValue: false)]
     public bool Interactive { get; set; }
-    
-    [Option("--force", "-f", hasValue: false)]
-    // Description = "Force overwrite existing repositories."
+    [Option("--force", "-f", hasValue: false, description: "Force overwrite existing repositories.")]
     public bool Force { get; set; }
-    [Option("--clear", "-c", hasValue: false)]
-    // Description = "clear paths before cloning"
+    [Option("--clear", "-c", hasValue: false, description: "clear paths before cloning")]
     public bool Clear { get; set; }
     
     protected override bool ShouldSkipRepository(RepositoryDto repository) => false;    
@@ -34,7 +31,7 @@ public class CloneCommand : RooCommandBase
     public override async Task RunAsync()
     {
         _logger.LogApplicationNameFiglet();
-        _logger.Log(LoggingComponents.GetCloneCommandRule());
+        _logger.Log(LoggingComponents.CloneCommandRule());
         
         await WithRooConfigAsync(RunCommandPerRepositoryAsync);
         

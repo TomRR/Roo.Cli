@@ -1,5 +1,4 @@
 using Roo.Cli.Cli.Nuget.CommandBinders;
-using Roo.Cli.Commands.Help;
 
 namespace TomRR.Cli.Tooling;
 
@@ -32,6 +31,15 @@ internal static class CommandDispatcherBinders
             
             case CloneCommand command:
                 CloneCommand_Binder.Bind(command, args);
+                await command.RunAsync();
+                break;
+            
+            case PullCommand command:
+                PullCommand_Binder.Bind(command, args);
+                await command.RunAsync();
+                break;
+            case FetchCommand command:
+                FetchCommand_Binder.Bind(command, args);
                 await command.RunAsync();
                 break;
 

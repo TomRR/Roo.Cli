@@ -1,11 +1,11 @@
-namespace Roo.Cli.Commands.Pull;
+namespace Roo.Cli.Commands.Fetch;
 
-[Command("pull")]
-public class PullCommand : RooCommandBase
+[Command("fetch")]
+public class FetchCommand : RooCommandBase
 {
-    private readonly ICommandAction<PullCommand> _action;
+    private readonly ICommandAction<FetchCommand> _action;
     private readonly IRooLogger _logger;
-    public PullCommand(ICommandAction<PullCommand> action, IRooLogger logger, IRooConfigService configService, IDirectoryService  directoryService)        
+    public FetchCommand(ICommandAction<FetchCommand> action, IRooLogger logger, IRooConfigService configService, IDirectoryService  directoryService)        
         : base(logger, configService, directoryService)
     {
         _action = action ?? throw new ArgumentNullException(nameof(action));
@@ -20,7 +20,8 @@ public class PullCommand : RooCommandBase
     
     public override async Task RunAsync()
     {
-        _logger.Log(LoggingComponents.PullCommandRule());
+        _logger.Log(LoggingComponents.FetchCommandRule());
+
         await WithRooConfigAsync(RunCommandPerRepositoryAsync);
     }
     
@@ -30,11 +31,11 @@ public class PullCommand : RooCommandBase
         {
             _logger.LogError(
                 LoggingComponents.GetRepoUrlMissingError(repository.Name), 
-                additionalLineBreaksAfter: 2);
+                additionalLineBreaksAfter: 1);
             return;
         }
         
-        _logger.Log(LoggingComponents.GetPullingWithRepoName(repository.Name));
+        _logger.Log(LoggingComponents.GetFetchingWithRepoName(repository.Name));
         var commandResult = await _action.RunCommandAsync(repository);
         
         if (commandResult.HasError)
@@ -43,7 +44,7 @@ public class PullCommand : RooCommandBase
             return;
         }
         
-        _logger.Log($"{Icons.GreenDotIcon} {commandResult.Value.StandardOutput}");
+        _logger.Log($"{Icons.CheckIcon} DONE");
     }
     
 }

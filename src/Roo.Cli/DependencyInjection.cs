@@ -1,5 +1,3 @@
-using Roo.Cli.Commands.Help;
-
 namespace Roo.Cli;
 
 public static class DependencyInjection
@@ -21,6 +19,8 @@ public static class DependencyInjection
         services.AddSingleton<ICommandAction<StatusCommand>, StatusCommandAction>();        
         services.AddSingleton<ICommandAction<HelpCommand>, HelpCommandAction>();        
         services.AddSingleton<ICommandAction<CloneCommand>, CloneCommandAction>();        
+        services.AddSingleton<ICommandAction<PullCommand>, PullCommandAction>();        
+        services.AddSingleton<ICommandAction<FetchCommand>, FetchCommandAction>();        
         return services;
     }
     public static CliAppBuilder AddRooCommands(this CliAppBuilder builder)
@@ -30,7 +30,9 @@ public static class DependencyInjection
         
         builder.AddCommand<InitCommand>("init");
         builder.AddCommand<CloneCommand>("clone");
-        builder.AddCommand<StatusCommand>("status", "-s");
+        builder.AddCommand<StatusCommand>("status");
+        builder.AddCommand<PullCommand>("pull");
+        builder.AddCommand<FetchCommand>("fetch");
         
         return builder;
     }

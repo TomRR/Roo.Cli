@@ -1,5 +1,3 @@
-using Roo.Cli.Commands.Help;
-
 namespace Roo.Cli.Cli.Nuget.CommandBinders;
 
 public static class HelpCommand_Binder

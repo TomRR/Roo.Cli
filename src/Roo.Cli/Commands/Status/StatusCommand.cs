@@ -33,12 +33,12 @@ public class StatusCommand : RooCommandBase
     {
         _table = new Table()
             .RoundedBorder()
-            .Title($"[bold cyan]{Icons.PackageIcon} Roo Status Summary[/]")
+            .Title($"[bold cyan]Roo Status Summary[/]")
             .AddColumn("[bold]Repository[/]")
             .AddColumn("[bold]Status[/]")
             .AddColumn("[bold]Sync[/]");
 
-        _logger.Log(LoggingComponents.GetStatusCommandRule());
+        _logger.Log(LoggingComponents.StatusCommandRule());
         await WithRooConfigAsync(RunStatusCommandAsync);
         _logger.Log(_table);
     }
@@ -64,8 +64,6 @@ public class StatusCommand : RooCommandBase
         );
 
         _statusRenderer.Render(parsed);
-        
-        _logger.Log(LoggingComponents.GreyDimRule());
     }
 
     private static string GetStatusSummary(GitRepoStatusInfo info)

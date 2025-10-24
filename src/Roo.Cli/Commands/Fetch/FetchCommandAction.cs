@@ -1,6 +1,6 @@
-namespace Roo.Cli.Commands.Pull;
+namespace Roo.Cli.Commands.Fetch;
 
-public class PullCommandAction : ICommandAction<PullCommand>
+public class FetchCommandAction : ICommandAction<FetchCommand>
 {
     public async Task<Result<RepositoryActionResponse, Error, Skipped>> RunCommandAsync(RepositoryDto repository, bool force = false)
     {
@@ -9,7 +9,7 @@ public class PullCommandAction : ICommandAction<PullCommand>
         {
             var result = await CliWrap.Cli.Wrap("git")
                 .WithArguments(args => args
-                    .Add("pull")
+                    .Add("fetch")
                 )
                 .WithWorkingDirectory(repository.GetLocalRepoPath())
                 .WithStandardOutputPipe(PipeTarget.ToDelegate(GetConsoleLog))

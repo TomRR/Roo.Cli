@@ -26,4 +26,8 @@ public static class Icons
     public const string ArrowUpSimpleIcon = "\u2191";
     public const string ArrowDownSimpleIcon = "\u2193";
     public const string CheckSimpleIcon = "\u2714\ufe0e";
+    public const string PullIcon = "\ud83d\udce5";
+    public const string PushIcon = "\ud83d\udce4";
+    public const string StashIcon = "\ud83e\uddfa";
+    public const string FetchIcon = "\ud83d\udce1";
 }

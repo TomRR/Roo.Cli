@@ -23,7 +23,7 @@ public sealed class InitCommand : ICommand
     public async Task RunAsync()
     {
         _logger.LogApplicationNameFiglet();
-        _logger.Log(LoggingComponents.GetInitCommandRule());
+        _logger.Log(LoggingComponents.InitCommandRule());
 
         await Task.CompletedTask;
 

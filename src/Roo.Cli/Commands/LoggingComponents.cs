@@ -34,15 +34,33 @@ public static class LoggingComponents
     
     public static string GetRepoName(string repositoryName)
         => $"{Icons.GearIcon} Repository: {repositoryName}";
+    public static string GetPullingWithRepoName(string repositoryName)
+        => $"{Icons.GearIcon}Pulling {repositoryName}...";
+    public static string GetFetchingWithRepoName(string repositoryName)
+        => $"{Icons.GearIcon}Fetching {repositoryName}...";
     
     public static string DeletingExistingPath(string path)
         => $"{Icons.BroomIcon} Deleting existing directory: {path}";
-    public static Rule GetInitCommandRule()
+    
+    
+    public static Rule InitCommandRule()
         => new($"[yellow]{Icons.RocketIcon} Init Roo[/]");
-    public static Rule GetCloneCommandRule()
-        => new Rule($"[yellow]{Icons.RocketIcon} Clone Command[/]");
-    public static Rule GetStatusCommandRule()
-        => new Rule($"[yellow]{Icons.RocketIcon} Status Command[/]");
+    public static Rule CloneCommandRule()
+        => new Rule($"[yellow]{Icons.RocketIcon} Clone[/]");
+    public static Rule StatusCommandRule()
+        => new Rule($"[yellow]{Icons.StatisticIcon} Status[/]");
+    public static Rule FetchCommandRule()
+        => new Rule($"[yellow]{Icons.FetchIcon} Fetch[/]");
+    public static Rule PullCommandRule()
+        => new Rule($"[yellow]{Icons.PullIcon} Pull[/]");
+    public static Rule PushCommandRule()
+        => new Rule($"[yellow]{Icons.PushIcon} Push[/]");
+    public static Rule CheckoutCommandRule()
+        => new Rule($"[yellow]{Icons.BranchIcon} Switch Branch[/]");
+    public static Rule StashCommandRule()
+        => new Rule($"[yellow]{Icons.StashIcon} Stash[/]");
+    
+    
     public static Rule EmptyRule()
         => new Rule();
     public static Rule GreyDimRule()

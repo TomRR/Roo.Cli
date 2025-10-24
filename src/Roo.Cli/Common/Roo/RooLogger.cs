@@ -20,7 +20,7 @@ public class RooLogger : IRooLogger
     {
         var errorType = error.ErrorType;
         var errorDescription = error.Description;
-        var errorMessage = $"{Icons.ErrorIcon} {errorType}: \n{errorDescription}\n";
+        var errorMessage = $"{Icons.RedDotIcon} {errorType}: \n{errorDescription}\n";
         if (additionalMessage is not null)
         {
             AnsiConsole.Write($"{additionalMessage}\n");
