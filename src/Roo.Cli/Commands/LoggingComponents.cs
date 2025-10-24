@@ -45,6 +45,9 @@ public static class LoggingComponents
         => new Rule($"[yellow]{Icons.RocketIcon} Status Command[/]");
     public static Rule EmptyRule()
         => new Rule();
+    public static Rule GreyDimRule()
+        => new Rule().RuleStyle("grey dim");
+
     public static Rule GetCloneStatisticRule()
         => new Rule($"{Icons.StatisticIcon} Clone Summary").LeftJustified();
     public static Error GetRepoUrlMissingError(string repositoryName)

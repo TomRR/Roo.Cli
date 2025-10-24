@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddSingleton<IPromptHandler, PromptHandler>();
         services.AddSingleton<IGitStatusParser, GitStatusParser>();
         services.AddTransient<IRepositoryActionLogger, RepositoryActionLogger>();
+        services.AddTransient<IGitRepoStatusRenderer, GitRepoStatusRenderer>();
         
         services.AddSingleton<ICommandAction<StatusCommand>, StatusCommandAction>();        
         services.AddSingleton<ICommandAction<HelpCommand>, HelpCommandAction>();        

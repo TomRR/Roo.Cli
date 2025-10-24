@@ -50,6 +50,24 @@ public class GitStatusParserTests
     }
 
     [Fact]
+    public void Parse_ShouldDetectRenamedFile()
+    {
+        string output = "2 R. N... 100644 100644 100644 hash1 hash2 old/path.cs new/path.cs";
+        var result = _parser.Parse(output);
+        Assert.Equal(RepoStatus.Staged, result.Status);
+        Assert.Contains("new/path.cs", result.StagedFiles);
+    }
+
+    [Fact]
+    public void Parse_ShouldDetectCopiedFile()
+    {
+        string output = "2 C. N... 100644 100644 100644 hash1 hash2 src/original.cs src/copy.cs";
+        var result = _parser.Parse(output);
+        Assert.Equal(RepoStatus.Staged, result.Status);
+        Assert.Contains("src/copy.cs", result.StagedFiles);
+    }
+
+    [Fact]
     public void Parse_ShouldDetectAheadBehindStatus()
     {
         string output = "# branch.ab +2 -1";

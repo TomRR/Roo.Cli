@@ -6,21 +6,26 @@ namespace Roo.Cli.Commands.Status;
 public class StatusCommand : RooCommandBase
 {
     private readonly IRooLogger _logger;
-    private readonly IRepositoryActionLogger _repositoryActionLogger;
     private readonly IGitStatusParser _gitStatusParser;
+    private readonly IGitRepoStatusRenderer _statusRenderer;
     private readonly ICommandAction<StatusCommand> _action;
     private Table _table;
 
-
-    public StatusCommand(ICommandAction<StatusCommand> action, IRooLogger logger, IRooConfigService configService, IRepositoryActionLogger  repositoryActionLogger,IDirectoryService directoryService, IGitStatusParser gitStatusParser)        
+    public StatusCommand(
+        ICommandAction<StatusCommand> action,
+        IRooLogger logger,
+        IRooConfigService configService,
+        IDirectoryService directoryService,
+        IGitStatusParser gitStatusParser,
+        IGitRepoStatusRenderer renderer)
         : base(logger, configService, directoryService)
     {
         _action = action ?? throw new ArgumentNullException(nameof(action));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _repositoryActionLogger = repositoryActionLogger ?? throw new ArgumentNullException(nameof(repositoryActionLogger));
         _gitStatusParser = gitStatusParser ?? throw new ArgumentNullException(nameof(gitStatusParser));
+        _statusRenderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
     }
-    
+
     [Option("--interactive", "-i", hasValue: false)]
     public bool Interactive { get; set; }
 
@@ -28,22 +33,16 @@ public class StatusCommand : RooCommandBase
     {
         _table = new Table()
             .RoundedBorder()
-            .Title("[bold cyan]📦 Roo Status Summary[/]")
+            .Title($"[bold cyan]{Icons.PackageIcon} Roo Status Summary[/]")
             .AddColumn("[bold]Repository[/]")
-            .AddColumn("[bold]Status[/]");
-        
-        _logger.Log(LoggingComponents.GetCloneCommandRule());
+            .AddColumn("[bold]Status[/]")
+            .AddColumn("[bold]Sync[/]");
+
+        _logger.Log(LoggingComponents.GetStatusCommandRule());
         await WithRooConfigAsync(RunStatusCommandAsync);
-        
         _logger.Log(_table);
-        
-        
-        _logger.Log(InternalLogOutput.Output);
-
-
-
     }
-    
+
     private async Task RunStatusCommandAsync(RepositoryDto repository)
     {
         _logger.Log(LoggingComponents.GetRepoName(repository.Name));
@@ -58,41 +57,34 @@ public class StatusCommand : RooCommandBase
 
         var parsed = _gitStatusParser.Parse(commandResult.Value.StandardOutput);
 
-        // Add to summary table
         _table.AddRow(
             $"[grey]{repository.Name}[/]",
-            $"{parsed.Status.StateToEmoji()} ({parsed.BranchHeadName})"
+            $"{GetStatusSummary(parsed)} ({parsed.BranchHeadName})",
+            $"{GetSyncStatus(parsed)}"
         );
 
-        AnsiConsole.MarkupLine($"[yellow]Branch:[/] Head: {parsed.BranchHeadName} / Upstream: {parsed.BranchUpstreamName}");
-
-        if (parsed.Status is RepoStatus.Clean)
-        {
-            _logger.Log($"{parsed.Status.StateToEmoji()}");
-            _logger.Log(LoggingComponents.EmptyRule());
-            return;
-        }
-        if (parsed.ModifiedFiles.Any())
-        {
-            AnsiConsole.MarkupLine("[orange1]Modified files:[/]");
-            foreach (var file in parsed.ModifiedFiles)
-            {
-                AnsiConsole.MarkupLine($"  [grey]- {file}[/]");
-            }        }
-
-        if (parsed.UntrackedFiles.Any())
-        {
-            AnsiConsole.MarkupLine("[yellow]Untracked files:[/]");
-            foreach (var file in parsed.UntrackedFiles)
-            {
-                AnsiConsole.MarkupLine($"  [grey]- {file}[/]");
-            }        }
-
-        if (parsed.Ahead > 0 || parsed.Behind > 0)
-        {
-            AnsiConsole.MarkupLine($"[blue]Ahead {parsed.Ahead}, Behind {parsed.Behind}[/]");
-        }
-        _logger.Log(LoggingComponents.EmptyRule());
+        _statusRenderer.Render(parsed);
+        
+        _logger.Log(LoggingComponents.GreyDimRule());
     }
-}
 
+    private static string GetStatusSummary(GitRepoStatusInfo info)
+    {
+        return info.Status switch
+        {
+            RepoStatus.Clean => "🟢 Clean",
+            RepoStatus.Error => "🔴 Conflict",
+            _ when info.StagedFiles.Any() || info.ModifiedFiles.Any() ||
+                   info.DeletedFiles.Any() || info.UntrackedFiles.Any() => "🟠 Changes",
+            _ => "🟡 Unknown"
+        };
+    }
+    private string GetSyncStatus(GitRepoStatusInfo parsed) => (parsed.Ahead, parsed.Behind) switch
+    {
+        (0, 0) => "In [orange1]sync[/]",
+        (>0, >0) => $"{Icons.ArrowUpSimpleIcon}{parsed.Ahead}/{Icons.ArrowDownSimpleIcon}{parsed.Behind}",
+        (>0, 0) => $"{Icons.ArrowUpSimpleIcon} {parsed.Ahead} ahead",
+        (0, >0) => $"{Icons.ArrowDownSimpleIcon} {parsed.Behind} behind",
+        _ => "Unknown"
+    };
+}

@@ -24,6 +24,16 @@ public class GitRepoStatusInfo
     public List<string> UntrackedFiles { get; } = new();
     public List<string> IgnoredFiles { get; } = new();
     public List<string> ConflictedFiles { get; } = new();
-
     public RepoStatus Status { get; set; } = RepoStatus.Clean;
+}
+
+public static class GitRepoStatusInfoExtensions
+{
+    public static bool IsClean(this GitRepoStatusInfo info)
+        => info.StagedFiles.Count == 0 &&
+           info.ModifiedFiles.Count == 0 &&
+           info.DeletedFiles.Count == 0 &&
+           info.UntrackedFiles.Count == 0 &&
+           info.IgnoredFiles.Count == 0 &&
+           info.ConflictedFiles.Count == 0;
 }

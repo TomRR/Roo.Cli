@@ -3,6 +3,7 @@ namespace Roo.Cli.Common;
 public static class Icons
 {
     public const string StatisticIcon = "\ud83d\udcca";
+    public const string PackageIcon = "📦";
     public const string CheckIcon = "\u2705";
     public const string WarningIcon = "\u26a0\ufe0f";
     public const string ErrorIcon = "\u274c";
@@ -20,4 +21,9 @@ public static class Icons
     public const string OrangeDotIcon = "\ud83d\udfe0";
     public const string UpArrowIcon = "\u2b06\ufe0f";
     public const string BelowArrowIcon = "\u2b07\ufe0f";
+    public const string BranchIcon = "\ud83c\udf3f";
+    public const string ArrowRightSimpleIcon = "\u2192";
+    public const string ArrowUpSimpleIcon = "\u2191";
+    public const string ArrowDownSimpleIcon = "\u2193";
+    public const string CheckSimpleIcon = "\u2714\ufe0e";
 }
