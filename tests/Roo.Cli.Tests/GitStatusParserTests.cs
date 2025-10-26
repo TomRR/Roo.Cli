@@ -1,3 +1,5 @@
+using Roo.Cli.Features.Commands.Git.Status;
+
 namespace Roo.Cli.Tests;
 
 public class GitStatusParserTests

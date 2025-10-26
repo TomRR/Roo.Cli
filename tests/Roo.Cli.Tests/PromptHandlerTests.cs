@@ -1,3 +1,6 @@
+using Roo.Cli.Infrastructure.Logging;
+using Roo.Cli.Infrastructure.Prompting;
+
 namespace Roo.Cli.Tests
 {
     public class PromptHandlerTests

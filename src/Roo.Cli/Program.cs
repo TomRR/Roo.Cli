@@ -1,6 +1,10 @@
 ﻿var builder = CliAppBuilder.CreateDefaultBuilder(args);
+builder
+    .AddToolkitDependencies()
+    .AddCommands();
+
 builder.Services.AddRooDependencies();
-builder.AddRooCommands();
+
 
 var app = builder.Build();
 await app.RunAsync(args);

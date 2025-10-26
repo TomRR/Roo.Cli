@@ -13,6 +13,8 @@
         <ToolCommandName>roo</ToolCommandName>
         <PackageOutputPath>../../nupkg</PackageOutputPath>
         <RootNamespace>Roo.Cli</RootNamespace>
+
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <!-- AOT settings only apply when explicitly requested -->
@@ -25,18 +27,10 @@
 
     <ItemGroup>
       <PackageReference Include="CliWrap" Version="3.9.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.9" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
       <PackageReference Include="Spectre.Console" Version="0.51.1" />
+      <PackageReference Include="TomRR.Cli.Toolkit.SourceGenerators" Version="0.0.12" />
       <PackageReference Include="TomRR.Core.ResultType" Version="0.0.6" />
     </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\TomRR.Cli.Tooling\TomRR.Cli.Tooling\TomRR.Cli.Tooling.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Commands\Checkout\" />
-    </ItemGroup>
-
 </Project>

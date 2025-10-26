@@ -1,8 +1,10 @@
+using Roo.Cli.Features.Commands.Core;
+using Roo.Cli.Infrastructure.Models;
+
 namespace Roo.Cli.Tests;
 
 using System.Collections.Generic;
 using Xunit;
-using Roo.Cli.Common.Models;
 
 public class MapperExtensionsTests
 {

@@ -1,21 +1,30 @@
 // Global using directives
 
+
 global using CliWrap;
 global using CliWrap.Buffered;
 global using Microsoft.Extensions.DependencyInjection;
 global using ResultType;
 global using ResultType.UnitTypes;
 global using Roo.Cli;
-global using Roo.Cli.Commands;
-global using Roo.Cli.Commands.Clone;
-global using Roo.Cli.Commands.Fetch;
-global using Roo.Cli.Commands.Help;
-global using Roo.Cli.Commands.Init;
-global using Roo.Cli.Commands.Pull;
-global using Roo.Cli.Commands.Status;
-global using Roo.Cli.Commands.Version;
-global using Roo.Cli.Common;
-global using Roo.Cli.Common.Models;
-global using Roo.Cli.Common.Roo;
-global using TomRR.Cli.Tooling;
-global using TomRR.Cli.Tooling.Attributes;
+global using Roo.Cli.Features.Commands.Core;
+global using Roo.Cli.Features.Commands.Git;
+global using Roo.Cli.Features.Commands.Git.Add;
+global using Roo.Cli.Features.Commands.Git.Clone;
+global using Roo.Cli.Features.Commands.Git.Commit;
+global using Roo.Cli.Features.Commands.Git.Fetch;
+global using Roo.Cli.Features.Commands.Git.Pull;
+global using Roo.Cli.Features.Commands.Git.Push;
+global using Roo.Cli.Features.Commands.Git.Status;
+global using Roo.Cli.Features.Commands.System.Help;
+global using Roo.Cli.Infrastructure.Config;
+global using Roo.Cli.Infrastructure.IO;
+global using Roo.Cli.Infrastructure.Logging;
+global using Roo.Cli.Infrastructure.Models;
+global using Roo.Cli.Infrastructure.Prompting;
+global using Roo.Cli.UI;
+global using Roo.Cli.UI.Components;
+global using Spectre.Console;
+global using TomRR.Cli.Toolkit;
+global using TomRR.Cli.Toolkit.Abstractions;
+global using TomRR.Cli.Toolkit.Attributes;
