@@ -1,17 +1,17 @@
-namespace Roo.Cli.Features.Commands.Git.Commit;
+namespace Roo.Cli.Features.Commands.Git.Push;
 
-public sealed record CommitRequest : ICommandRequest
+public sealed record PullRequest : ICommandRequest
 {
-    // ICommandRequest Member
     public bool Interactive { get; }
     public bool Select { get; }
     public bool MultiSelect { get; }
     
-    //
     public string CommandName { get; }
     public RepositoryDto Repository { get; }
     
-    private CommitRequest(
+    public bool Force { get; }
+
+    private PullRequest(
         string commandName, 
         RepositoryDto repository,
         bool interactive, 
@@ -25,11 +25,12 @@ public sealed record CommitRequest : ICommandRequest
         MultiSelect = multiSelect;
     }
 
-    public static CommitRequest Create(
+    public static PullRequest Create(
         string commandName, 
         RepositoryDto repository,
         bool interactive, 
         bool select, 
-        bool multiSelect)
+        bool multiSelect
+    )
         => new(commandName, repository, interactive, select, multiSelect);
 }

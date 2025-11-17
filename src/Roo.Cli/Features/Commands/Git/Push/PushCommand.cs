@@ -1,18 +1,12 @@
 namespace Roo.Cli.Features.Commands.Git.Push;
 
 [Command("push")]
-public sealed partial class PushCommand : RooCommandBase
+public sealed partial class PushCommand(ICommandHandler<PushRequest> handler, RooCommandContext context)
+    : RooCommandBase(context)
 {
 
-    private readonly ICommandAction<PushCommand> _action;
-    private readonly IRooLogger _logger;
-
-    public PushCommand(RooCommandContext context, ICommandAction<PushCommand> action)        
-        : base(context)
-    {
-        _action = action ?? throw new ArgumentNullException(nameof(action));
-        _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
-    }
+    private readonly ICommandHandler<PushRequest> _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+    private readonly IRooLogger _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
 
     [Option("--force", "-f", hasValue: false, description: "Force push")]
     public bool Force { get; set; }
@@ -35,44 +29,10 @@ public sealed partial class PushCommand : RooCommandBase
     private async Task RunCommandPerRepositoryAsync(RepositoryDto repository)
     {
         _logger.Log(Components.Messages.GetPushingWithRepoName(repository.Name));
-
-        var args = BuildCommand();
-
-        var request = RooCommandRequest.Create(repository, args);
-        var commandResult = await _action.RunCommandAsync(request);
-
-        if (commandResult.HasError)
-        {
-            _logger.LogError(commandResult.Error);
-            _logger.Log(Components.Rules.GreyDimRule());
-            return;
-        }
-
-        var output = string.IsNullOrWhiteSpace(commandResult.Value.StandardOutput)
-            ? $"{Icons.GreenDotIcon} Everything up-to-date"
-            : $"{Icons.GreenDotIcon} {commandResult.Value.StandardOutput}";
-        _logger.Log(output);
-        _logger.Log(Components.Rules.GreyDimRule());
-    }
-
-    private IReadOnlyList<string> BuildCommand()
-    {
-        var builder = CliCommandBuilder.Create()
-            .Add(CommandName)
-            .AddFlag("--interactive", Interactive)
-            .AddFlag("--force", Force);
-
-        if (SetUpstream)
-        {
-            builder.AddFlag("--set-upstream");
-
-            if (!string.IsNullOrWhiteSpace(UpstreamRemote))
-                builder.AddPositional(UpstreamRemote);
-
-            if (!string.IsNullOrWhiteSpace(UpstreamBranch))
-                builder.AddPositional(UpstreamBranch);
-        }
-
-        return builder.Build();
+        
+        var request = PushRequest.Create(CommandName, repository, Interactive, Select, false);
+        var result = await _handler.HandleAsync(request);
+        
+        _logger.LogCommandResult(result);
     }
 }

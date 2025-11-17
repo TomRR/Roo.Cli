@@ -1,7 +1,7 @@
-namespace Roo.Cli.Features.Commands.Git.Status;
+namespace Roo.Cli.Features.Commands.Git.Status.Models;
 
 public class GitRepoStatusInfo
-{
+{ 
     public string BranchHeadName { get; set; } = string.Empty;
     public string BranchUpstreamName { get; set; } = string.Empty;
     public int Ahead { get; set; }

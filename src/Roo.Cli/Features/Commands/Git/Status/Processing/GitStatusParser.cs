@@ -1,11 +1,10 @@
-using System.Text.RegularExpressions;
-
-namespace Roo.Cli.Features.Commands.Git.Status;
+namespace Roo.Cli.Features.Commands.Git.Status.Processing;
 
 public interface IGitStatusParser
 {
     public GitRepoStatusInfo Parse(string output);
 }
+
 public class GitStatusParser : IGitStatusParser
 {
     public GitRepoStatusInfo Parse(string output)
@@ -13,24 +12,25 @@ public class GitStatusParser : IGitStatusParser
         var info = new GitRepoStatusInfo();
 
         if (string.IsNullOrWhiteSpace(output))
+        {
             return info;
-
+        }
         var lines = output.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var line in lines)
         {
             switch (line)
             {
-                case var l when l.StartsWith("# branch.head"):
-                    info.BranchHeadName = l.Replace("# branch.head", "").Trim();
+                case var _ when line.StartsWith("# branch.head"):
+                    info.BranchHeadName = line.Replace("# branch.head", "").Trim();
                     break;
 
-                case var l when l.StartsWith("# branch.upstream"):
-                    info.BranchUpstreamName = l.Replace("# branch.upstream", "").Trim();
+                case var _ when line.StartsWith("# branch.upstream"):
+                    info.BranchUpstreamName = line.Replace("# branch.upstream", "").Trim();
                     break;
 
-                case var l when l.StartsWith("# branch.ab"):
-                    var match = Regex.Match(l, @"# branch\.ab \+(\d+) -(\d+)");
+                case var _ when line.StartsWith("# branch.ab"):
+                    var match = Regex.Match(line, @"# branch\.ab \+(\d+) -(\d+)");
                     if (match.Success)
                     {
                         info.Ahead = int.Parse(match.Groups[1].Value);
@@ -38,16 +38,16 @@ public class GitStatusParser : IGitStatusParser
                     }
                     break;
 
-                case var l when l.StartsWith("? "):
-                    info.UntrackedFiles.Add(l[2..].Trim());
+                case var _ when line.StartsWith("? "):
+                    info.UntrackedFiles.Add(line[2..].Trim());
                     break;
 
-                case var l when l.StartsWith("! "):
-                    info.IgnoredFiles.Add(l[2..].Trim());
+                case var _ when line.StartsWith("! "):
+                    info.IgnoredFiles.Add(line[2..].Trim());
                     break;
 
-                case var l when Regex.IsMatch(l, @"^[12] "):
-                    ParseChangedFileLine(l, info);
+                case var _ when Regex.IsMatch(line, @"^[12] "):
+                    ParseChangedFileLine(line, info);
                     break;
 
                 default:
@@ -69,8 +69,8 @@ public class GitStatusParser : IGitStatusParser
         var xy = parts[1];
         var file = parts.Last();
 
-        char x = xy.Length > 0 ? xy[0] : '.';
-        char y = xy.Length > 1 ? xy[1] : '.';
+        var x = xy.Length > 0 ? xy[0] : '.';
+        var y = xy.Length > 1 ? xy[1] : '.';
 
         // X = index (staged)
         switch (x)
@@ -120,7 +120,7 @@ public class GitStatusParser : IGitStatusParser
         {
             return RepoStatus.Modified;
         }        
-        if (info.Ahead > 0 && info.Behind > 0)
+        if (info is { Ahead: > 0, Behind: > 0 })
         {
             return RepoStatus.Diverged;
         }        

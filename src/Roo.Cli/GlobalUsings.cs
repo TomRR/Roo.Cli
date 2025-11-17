@@ -1,6 +1,7 @@
 // Global using directives
 
 
+global using System.Text.RegularExpressions;
 global using CliWrap;
 global using CliWrap.Buffered;
 global using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ global using Roo.Cli.Features.Commands.Git.Fetch;
 global using Roo.Cli.Features.Commands.Git.Pull;
 global using Roo.Cli.Features.Commands.Git.Push;
 global using Roo.Cli.Features.Commands.Git.Status;
+global using Roo.Cli.Features.Commands.Git.Status.Models;
 global using Roo.Cli.Features.Commands.System.Help;
 global using Roo.Cli.Infrastructure.Config;
 global using Roo.Cli.Infrastructure.IO;

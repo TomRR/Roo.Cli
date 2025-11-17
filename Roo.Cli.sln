@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Cli", "src\Roo.Cli\Roo.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roo.Cli.Tests", "tests\Roo.Cli.Tests\Roo.Cli.Tests.csproj", "{730C4C52-43E3-46F0-A004-C99EDCE21F96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cli.Toolkit.SourceGenerators", "..\..\MyNuget\Cli.Nuget\Cli.Toolkit\Cli.Toolkit.SourceGenerators\Cli.Toolkit.SourceGenerators.csproj", "{9C8AF927-2462-4388-812A-15682D54AFE1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,9 +18,5 @@ Global
 		{730C4C52-43E3-46F0-A004-C99EDCE21F96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{730C4C52-43E3-46F0-A004-C99EDCE21F96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{730C4C52-43E3-46F0-A004-C99EDCE21F96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9C8AF927-2462-4388-812A-15682D54AFE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9C8AF927-2462-4388-812A-15682D54AFE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9C8AF927-2462-4388-812A-15682D54AFE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9C8AF927-2462-4388-812A-15682D54AFE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

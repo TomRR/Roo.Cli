@@ -1,5 +1,7 @@
 using Roo.Cli.Features.Commands.Core;
 using Roo.Cli.Features.Commands.Git.Status;
+using Roo.Cli.Features.Commands.Git.Status.Models;
+using Roo.Cli.Features.Commands.Git.Status.Processing;
 using Roo.Cli.Infrastructure.Logging;
 
 namespace Roo.Cli.Tests.Status;

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Spectre.Console.Rendering;
 
 namespace Roo.Cli.Infrastructure.Logging;
@@ -12,6 +14,7 @@ public interface IRooLogger
     public void LogApplicationNameFiglet();
     public void LogTaskCompleted();
     public void LogCommandResult(Result<IRooCommandResponse, Error, Skipped> result);
+    public Result<NoErrors, Errors> LogCommandResultErrors(Result<IRooCommandResponse, Error, Skipped> result);
 
 }
 
@@ -76,13 +79,14 @@ public class RooLogger : IRooLogger
     {
         AnsiConsole.Write($"{Icons.FinishFlagIcon} Completed\n");
     }
-
+    
     public void LogCommandResult(Result<IRooCommandResponse, Error, Skipped> result)
     {
         if (result.HasError)
         {
             LogError(result.Error);
             Log(Components.Rules.GreyDimRule());
+            
             return;
         }
         
@@ -100,5 +104,27 @@ public class RooLogger : IRooLogger
             : $"{Icons.CheckSimpleIcon}");
 
         Log(Components.Rules.GreyDimRule());
+    }
+    
+    public Result<NoErrors, Errors> LogCommandResultErrors(Result<IRooCommandResponse, Error, Skipped> result)
+    {
+        if (result.HasError)
+        {
+            LogError(result.Error);
+            Log(Components.Rules.GreyDimRule());
+            
+            return new Errors();
+        }
+        
+        var stdErr = result.Value?.StandardError ?? string.Empty;
+        
+        if (!string.IsNullOrWhiteSpace(stdErr))
+        {
+            Log($"{Icons.RedDotIcon} {result.Value?.StandardError}");
+            return new Errors();
+        }
+
+        return new NoErrors();
+
     }
 }

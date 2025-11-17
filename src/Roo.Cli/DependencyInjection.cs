@@ -1,3 +1,5 @@
+    using Roo.Cli.Features.Commands.Git.Status.Processing;
+
     namespace Roo.Cli;
 
     public static class DependencyInjection
@@ -27,9 +29,10 @@
             services.AddTransient<ICommandHandler<AddRequest>, AddCommandHandler>();
             
             // Clone
-            services.AddSingleton<ICliCommandExecutor<CloneCommandHandler>, GitCliExecutor<CloneCommandHandler>>();
-            services.AddTransient<ICommandHandler<CloneRequest>, CloneCommandHandler>();
-            
+            // services.AddSingleton<ICliCommandExecutor<CloneCommandHandler>, GitCliExecutor<CloneCommandHandler>>();
+            // services.AddTransient<ICommandHandler<CloneRequest>, CloneCommandHandler>();
+            services.AddSingleton<ICommandAction<CloneCommand>, CloneCommandAction>();        
+
             // Commit
             services.AddSingleton<ICliCommandExecutor<CommitCommandHandler>, GitCliExecutor<CommitCommandHandler>>();
             services.AddTransient<ICommandHandler<CommitRequest>, CommitCommandHandler>();
@@ -49,18 +52,8 @@
             // Status
             services.AddSingleton<ICliCommandExecutor<StatusCommandHandler>, GitCliExecutor<StatusCommandHandler>>();
             services.AddTransient<ICommandHandler<StatusRequest>, StatusCommandHandler>();
-            
             services.AddSingleton<IGitStatusParser, GitStatusParser>();
             services.AddTransient<IGitRepoStatusRenderer, GitRepoStatusRenderer>();
-            
-            
-            
-            // services.AddSingleton<ICommandAction<StatusCommand>, StatusCommandAction>();        
-            // services.AddSingleton<ICommandAction<CloneCommand>, CloneCommandAction>();        
-            // services.AddSingleton<ICommandAction<PullCommand>, PullCommandAction>();        
-            // services.AddSingleton<ICommandAction<PushCommand>, PushCommandAction>();        
-            // services.AddSingleton<ICommandAction<FetchCommand>, FetchCommandAction>();        
-            // services.AddSingleton<ICommandAction<CommitCommand>, CommitCommandAction>();     
             
             return services;
         }
@@ -87,8 +80,8 @@
             services.AddSingleton<IRooLogger, RooLogger>();
 
             // Prompting
-            services.AddSingleton<IPromptHandler, PromptHandler>();
-            services.AddSingleton<IRooUserInput, RooUserInput>();
+            services.AddSingleton<IPromptWrapper, PromptWrapper>();
+            services.AddSingleton<IRooPromptHandler, RooPromptHandler>();
             
             return services;
         }

@@ -1,11 +1,11 @@
 namespace Roo.Cli.Infrastructure.Prompting;
 
-public interface IRooUserInput
+public interface IRooPromptHandler
 {
     public string? ReadInput();
 }
 
-public class RooUserInput : IRooUserInput
+public class RooPromptHandler : IRooPromptHandler
 {
     public string? ReadInput()
     {

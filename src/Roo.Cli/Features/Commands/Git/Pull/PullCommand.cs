@@ -1,16 +1,12 @@
 namespace Roo.Cli.Features.Commands.Git.Pull;
 
 [Command("pull")]
-public sealed partial class PullCommand : RooCommandBase
+public sealed partial class PullCommand(ICommandHandler<PullRequest> handler, RooCommandContext context)
+    : RooCommandBase(context)
 {
-    private readonly ICommandAction<PullCommand> _action;
-    private readonly IRooLogger _logger;
-    public PullCommand(RooCommandContext context, ICommandAction<PullCommand> action)        
-        : base(context)
-    {
-        _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
-        _action = action ?? throw new ArgumentNullException(nameof(action));
-    }
+
+    private readonly ICommandHandler<PullRequest> _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+    private readonly IRooLogger _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
     
     [Option("--force", "-f", hasValue: false, description: "Force pull")]
     public bool Force { get; set; }
@@ -24,29 +20,10 @@ public sealed partial class PullCommand : RooCommandBase
     private async Task RunCommandPerRepositoryAsync(RepositoryDto repository)
     {
         _logger.Log(Components.Messages.GetPullingWithRepoName(repository.Name));
-
-        var args = BuildCommand();
-        var request = RooCommandRequest.Create(repository, args);
-        var commandResult = await _action.RunCommandAsync(request);
         
-        if (commandResult.HasError)
-        {
-            _logger.LogError(commandResult.Error);
-            _logger.Log(Components.Rules.GreyDimRule());
-            return;
-        }
+        var request = PullRequest.Create(CommandName, repository, Interactive, Select, false);
+        var result = await _handler.HandleAsync(request);
         
-        _logger.Log($"{Icons.GreenDotIcon} {commandResult.Value.StandardOutput}");
-        _logger.Log(Components.Rules.GreyDimRule());
+        _logger.LogCommandResult(result);
     }
-    private IReadOnlyList<string> BuildCommand()
-    {
-        var builder = CliCommandBuilder.Create()
-            .Add(CommandName)
-            .AddFlag("--force", Force);
-        
-        var args = builder.Build();
-        return args;
-    }
-    
 }

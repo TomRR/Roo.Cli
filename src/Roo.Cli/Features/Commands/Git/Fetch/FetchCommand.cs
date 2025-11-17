@@ -1,10 +1,11 @@
 namespace Roo.Cli.Features.Commands.Git.Fetch;
 
 [Command("fetch")]
-public sealed partial class FetchCommand(RooCommandContext context, ICommandAction<FetchCommand> action)
+public sealed partial class FetchCommand(ICommandHandler<FetchRequest> handler, RooCommandContext context)
     : RooCommandBase(context)
 {
-    private readonly ICommandAction<FetchCommand> _action = action ?? throw new ArgumentNullException(nameof(action));
+
+    private readonly ICommandHandler<FetchRequest> _handler = handler ?? throw new ArgumentNullException(nameof(handler));
     private readonly IRooLogger _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
 
     [Option("--force", "-f", hasValue: false, description: "Force pull")]
@@ -19,10 +20,9 @@ public sealed partial class FetchCommand(RooCommandContext context, ICommandActi
     private async Task RunCommandPerRepositoryAsync(RepositoryDto repository)
     {
         _logger.Log(Components.Messages.GetFetchingWithRepoName(repository.Name));
-
-        var args = CliCommandBuilder.Create().Add(CommandName).Build();
-        var request = RooCommandRequest.Create(repository, args);
-        var result = await _action.RunCommandAsync(request);
+        
+        var request = FetchRequest.Create(CommandName, repository, Interactive, Select, false);
+        var result = await _handler.HandleAsync(request);
         
         _logger.LogCommandResult(result);
     }

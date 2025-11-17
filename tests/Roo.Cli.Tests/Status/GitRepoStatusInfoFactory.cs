@@ -1,4 +1,5 @@
 using Roo.Cli.Features.Commands.Git.Status;
+using Roo.Cli.Features.Commands.Git.Status.Models;
 
 namespace Roo.Cli.Tests.Status;
 

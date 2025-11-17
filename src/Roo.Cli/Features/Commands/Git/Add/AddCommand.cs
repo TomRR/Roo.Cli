@@ -29,18 +29,6 @@ public sealed partial class AddCommand(ICommandHandler<AddRequest> handler, RooC
         var request = AddRequest.Create(CommandName, repository, Interactive, Select, false, Force, new OptionArgumentPair(Path, PathArg));
         var result = await _handler.HandleAsync(request);
         
-        if (result.HasError)
-        {
-            _logger.LogError(result.Error);
-            _logger.Log(Components.Rules.GreyDimRule());
-            return;
-        }
-        
-        _logger.Log($"{Icons.GreenDotIcon} {result.Value.StandardOutput}");
-        if (string.IsNullOrEmpty(result.Value.StandardError))
-        {
-            _logger.Log($"{Icons.RedDotIcon} {result.Value.StandardError}");
-        }
-        _logger.Log(Components.Rules.GreyDimRule());
+        _logger.LogCommandResult(result);
     }
 }

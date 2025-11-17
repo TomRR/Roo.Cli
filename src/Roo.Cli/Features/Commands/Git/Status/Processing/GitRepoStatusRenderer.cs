@@ -1,4 +1,4 @@
-namespace Roo.Cli.Features.Commands.Git.Status;
+namespace Roo.Cli.Features.Commands.Git.Status.Processing;
 
 public interface IGitRepoStatusRenderer
 {
@@ -13,5 +13,6 @@ public class GitRepoStatusRenderer(IRooLogger logger) : IGitRepoStatusRenderer
         if (!string.IsNullOrEmpty(text))
         {
             logger.Log(text);
-        }    }
+        }    
+    }
 }
