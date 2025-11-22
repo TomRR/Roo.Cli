@@ -1,6 +1,8 @@
+using ResultType.UnitTypes;
+using Roo.Cli.Features.Commands.Core;
 using Roo.Cli.Infrastructure.Logging;
 
-namespace Roo.Cli.Tests;
+namespace Roo.Cli.Tests.Helper;
 
 public class TestLogger : IRooLogger
 {
@@ -24,4 +26,12 @@ public class TestLogger : IRooLogger
 
     public void LogTaskCompleted()
     { }
+
+    public void LogCommandResult(Result<IRooCommandResponse, Error, Skipped> result)
+    { }
+
+    public Result<NoErrors, Errors> LogCommandResultErrors(Result<IRooCommandResponse, Error, Skipped> result)
+    {
+        throw new NotImplementedException();
+    }
 }

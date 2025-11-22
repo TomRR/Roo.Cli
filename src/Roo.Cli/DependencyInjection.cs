@@ -81,7 +81,7 @@
 
             // Prompting
             services.AddSingleton<IPromptWrapper, PromptWrapper>();
-            services.AddSingleton<IRooPromptHandler, RooPromptHandler>();
+            services.AddSingleton<IRooPrompt, RooPrompt>();
             
             return services;
         }

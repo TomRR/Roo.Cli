@@ -31,7 +31,7 @@ public static partial class Components
         public static Rule GreyDimRule()
             => new Rule().RuleStyle("grey dim");
 
-        public static Rule GetCloneStatisticRule()
+        public static Rule GetCloneSummaryRule()
             => new Rule($"{Icons.StatisticIcon} Clone Summary").LeftJustified();
     }
 }

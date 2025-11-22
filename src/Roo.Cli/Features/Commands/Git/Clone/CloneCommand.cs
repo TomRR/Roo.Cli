@@ -4,17 +4,19 @@ namespace Roo.Cli.Features.Commands.Git.Clone;
 public sealed partial class CloneCommand : RooCommandBase
 {
     private readonly ICommandAction<CloneCommand> _action;
+    private readonly ICommandHandler<FetchRequest> _handler;
     private readonly IRooLogger _logger;
     private readonly IDirectoryService _directoryService;
-    private readonly IPromptHandler _promptHandler;
+    private readonly IRooPrompt _prompt;
     private readonly List<CliResults> _results = new();
-    public CloneCommand(RooCommandContext context, ICommandAction<CloneCommand> action, IPromptHandler promptHandler)        
+    public CloneCommand(RooCommandContext context, ICommandAction<CloneCommand> action, ICommandHandler<FetchRequest> handler, IRooPrompt prompt)        
         : base(context)
     {
         _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));
         _directoryService = context.DirectoryService ?? throw new ArgumentNullException(nameof(context.DirectoryService));
         _action = action ?? throw new ArgumentNullException(nameof(action));
-        _promptHandler = promptHandler ?? throw new ArgumentNullException(nameof(promptHandler));
+        _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        _prompt = prompt ?? throw new ArgumentNullException(nameof(prompt));
     }
     
     [Option("--force", "-f", hasValue: false, description: "Force overwrite existing repositories.")]
@@ -32,7 +34,7 @@ public sealed partial class CloneCommand : RooCommandBase
         await WithRooConfigAsync(RunCommandPerRepositoryAsync);
         
         _logger.AddLineBreak();
-        _logger.Log(Components.Rules.GetCloneStatisticRule());
+        _logger.Log(Components.Rules.GetCloneSummaryRule());
         _logger.Log(Components.Tables.GetCloningResultTable(_results));
         _logger.AddLineBreak();
         _logger.LogTaskCompleted();
@@ -87,10 +89,10 @@ public sealed partial class CloneCommand : RooCommandBase
         
         if (!Force)
         {
-            var message = $"{Icons.WarningIcon} Path already exists\n Overwrite?";
-            var overwriteAnswer = _promptHandler.PromptYesNo(message);
+            const string message = $"{Icons.WarningIcon} Path already exists[/]Overwrite?";
+            var overwriteAnswer = _prompt.AskYesNo(message);
             
-            if (overwriteAnswer == PromptAnswer.No)
+            if (overwriteAnswer == PromptAnswersType.No)
             {
                 return Result.Skipped;
             }

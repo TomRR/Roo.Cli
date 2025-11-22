@@ -1,6 +1,6 @@
 namespace Roo.Cli.Infrastructure.Prompting;
 
-public enum PromptAnswer
+public enum PromptAnswersType
 {
     Yes,
     No,
