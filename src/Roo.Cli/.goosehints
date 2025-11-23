@@ -1,0 +1,134 @@
+How To Create a new Command
+
+{NEWCOMMAND} is the placeholder for the command you shall create.
+
+Commands are in the 'Command' Directory
+src/Roo.Cli/Commands/{NEWCOMMAND}
+
+Create 2 new Files in the {NEWCOMMAND} Directory:
+1. {NEWCOMMAND}Command.cs
+Content:
+```c#
+namespace Roo.Cli.Commands.{NEWCOMMAND};  
+  
+[Command(nameof(CommandName))]  
+public class {NEWCOMMAND}Command : RooCommandBase  
+{  
+    private const string CommandName = "{NEWCOMMAND}";  
+    private readonly ICommandAction<{NEWCOMMAND}Command> _action;  
+    private readonly IRooLogger _logger;  
+    public AddCommand(RooCommandContext context, ICommandAction<{NEWCOMMAND}Command> action)          
+: base(context)  
+    {        _logger = context.Logger ?? throw new ArgumentNullException(nameof(context.Logger));  
+        _action = action ?? throw new ArgumentNullException(nameof(action));  
+    }        
+    # if you shall create options or arguments place them here
+    
+
+    public override async Task RunAsync()  
+    {        _logger.Log(LoggingComponents.AddCommandRule());  
+        await WithRooConfigAsync(RunCommandPerRepositoryAsync);  
+    }    private async Task RunCommandPerRepositoryAsync(RepositoryDto repository)  
+    {        _logger.Log(LoggingComponents.Get{NEWCOMMAND}ingWithRepoName(repository.Name));  
+  
+        var args = BuildCommand();  
+        var request = RooCommandRequest.Create(repository, args);  
+        var commandResult = await _action.RunCommandAsync(request);  
+        if (commandResult.HasError)  
+        {            _logger.LogError(commandResult.Error);  
+            _logger.Log(LoggingComponents.GreyDimRule());  
+            return;  
+        }        _logger.Log($"{Icons.GreenDotIcon} {commandResult.Value.StandardOutput}");  
+        _logger.Log(LoggingComponents.GreyDimRule());  
+    }    private IReadOnlyList<string> BuildCommand()  
+    {        var builder = CliCommandBuilder.Create()  
+            .Add(CommandName);
+            
+        var args = builder.Build();  
+        return args;  
+    }    }
+```
+
+how to create Options and arguments:
+
+```
+[Option("--set-upstream", hasValue: false)]  
+public bool SetUpstream { get; set; }  
+  
+[Argument(0, ofOption: nameof(SetUpstream))]  
+public string? UpstreamRemote { get; set; }
+```
+```
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]  
+public sealed class ArgumentAttribute : Attribute  
+{  
+    /// <summary>  
+    /// Position of this argument relative to the command or its corresponding option.    /// </summary>    public int Position { get; }  
+  
+    /// <summary>  
+    /// The name of the option property this argument belongs to (if any).    /// Use nameof(OptionProperty) to keep it type-safe.    /// </summary>    public string? OfOption { get; }  
+  
+    public ArgumentAttribute(int position, string? ofOption = null)  
+    {        Position = position;  
+        OfOption = ofOption;  
+    }}
+    
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]  
+public sealed class OptionAttribute : Attribute  
+{  
+    public string LongName { get; }  
+    public string? ShortName { get; }  
+    public bool HasValue { get; }  
+    public string? Description { get; }  
+  
+    public OptionAttribute(string longName, string? shortName = null, bool hasValue = true, string? description = null)  
+    {        LongName = longName;  
+        ShortName = shortName;  
+        HasValue = hasValue;  
+        Description = description;  
+    }}
+    
+```
+
+2. {NEWCOMMAND}ActionCommand.cs
+
+Content:
+```c#
+namespace Roo.Cli.Commands.{NEWCOMMAND};  
+  
+public class {NEWCOMMAND}CommandAction : ICommandAction<{NEWCOMMAND}Command>  
+{  
+    public async Task<Result<RooCommandResponse, Error, Skipped>> RunCommandAsync(RooCommandRequest request)  
+    {        try  
+        {  
+            var result = await CliWrapFactory.GitCliCommand()  
+                .WithArguments(request.Arguments)  
+                .WithWorkingDirectory(request.Repository.GetLocalRepoPath())  
+                .ExecuteBufferedAsync();  
+            var response = RooCommandResponse.Create(  
+                request.Repository,   
+                result.StandardOutput,   
+                result.StandardError);  
+            return response;  
+  
+        }        catch (Exception e)  
+        {            return Error.Conflict(e.Message);  
+        }    }}
+```
+
+
+## Adjust Dependency Injection
+
+Add the new command:
+1. Add in the method 'AddRooDependencies' the line
+```
+services.AddSingleton<ICommandAction<{NEWCOMMAND}Command>, {NEWCOMMAND}CommandAction>();
+```
+before the 'return service;' line
+
+2. Add in the method 'AddRooCommands' the line
+```
+builder.AddCommand<{NEWCOMMAND}Command>("{NEWCOMMAND}");
+```
+before the 'return builder;' line
+

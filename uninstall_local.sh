@@ -41,7 +41,14 @@ uninstall_nuget() {
   log "Uninstalling NuGet global tool..."
   if dotnet tool list --global | grep -q "roo"; then
     dotnet tool uninstall --global Roo.Cli
-    rm -r nupkg
+    
+    if [ -d "./nupkg" ]; then
+      rm -r ./nupkg
+      log "Removed ./nupkg directory ✅"
+    else
+      log "./nupkg directory does not exist."
+    fi
+    
     log "NuGet tool uninstalled ✅"
   else
     log "NuGet global tool Roo.Cli not installed."
