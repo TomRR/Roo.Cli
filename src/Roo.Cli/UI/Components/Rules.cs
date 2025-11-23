@@ -24,6 +24,9 @@ public static partial class Components
             => new Rule($"[yellow]{Icons.BranchIcon} Switch Branch[/]");
         public static Rule StashCommandRule()
             => new Rule($"[yellow]{Icons.StashIcon} Stash[/]");
+        
+        public static Rule NpmInstallCommandRule()
+            => new Rule($"[yellow]{Icons.GearIcon} Npm Install[/]");
     
     
         public static Rule EmptyRule()

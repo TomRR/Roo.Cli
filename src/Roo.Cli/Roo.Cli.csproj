@@ -33,8 +33,4 @@
       <PackageReference Include="TomRR.Cli.Toolkit.SourceGenerators" Version="0.0.12" PrivateAssets="all" />
       <PackageReference Include="TomRR.Core.ResultType" Version="0.0.6" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Features\Commands\Run\" />
-    </ItemGroup>
 </Project>
